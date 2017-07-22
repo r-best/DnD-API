@@ -1,13 +1,7 @@
-var AWS = require("aws-sdk");
+const db = require('./server.js');
 
-AWS.config.update({
-  region: "us-east-1"
-});
-
-var db = new AWS.DynamoDB();
-
-module.exports.test = function test(){
-    return {
-        message: "yeehaw"
-    };
+module.exports.getSpells = function getSpells(){
+    return db.spells.find().then(res => {
+        return res;
+    });
 }
