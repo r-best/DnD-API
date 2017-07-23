@@ -1,17 +1,11 @@
 const express = require('express');
 const app = express();
-const db = require('./db.js');
-const waterline = require('./waterline/waterline.js');
-
-global.__base = `{$__dirname}/`;
+const db = require('./db/db.js');
+const waterline = require('./db/waterline.js');
 
 waterline.waterline.initialize(waterline.config, (err, ontology) => {
-    if (err){
-        return console.err(err);
-    }
-    // console.log(ontology.collections)
-    module.exports.spells = ontology.collections.spells;
-    
+    global.collections = ontology.collections;
+
     var router = express.Router();
 
     router.get('/', (req, res) => {
@@ -20,12 +14,18 @@ waterline.waterline.initialize(waterline.config, (err, ontology) => {
         });
     });
 
-    router.get('/test', (req, res) => {
-        db.getSpells().then(res2 => {
+    router.get('/campaigns', (req, res) => {
+        db.getCampaigns().then(res2 => {
             res.json(res2);
         });
     });
-    
+
+    router.get('/campaigns/:campaign', (req, res) => {
+        db.getCampaign(req.params.campaign).then(res2 => {
+            res.json(res2);
+        });
+    });
+
     app.use('/api', router);
     app.listen(3000);
     console.log("Server listening...");

@@ -1,0 +1,10 @@
+{
+    "defaultConnection": {
+        "adapter": "postgresql",
+        "host": "localhost",
+        "port": "5432",
+        "database": "DnDb",
+        "user": "postgres",
+        "password": "mememachine"
+    }
+}

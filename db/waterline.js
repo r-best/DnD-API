@@ -1,24 +1,20 @@
 const Waterline = require('waterline');
 const sails = require('sails-postgresql');
-const Model = require('./models.js');
+const config = require('../config/config.json');
+const Model = require('../config/models.js');
 
 module.exports.config = {
     adapters: {
         postgresql: sails
     },
     connections: {
-        default: {
-            adapter: 'postgresql',
-            host: 'localhost',
-            port: '5432',
-            database: 'dndb',
-            user: 'postgres',
-            password: 'mememachine'
-        }
+        default: config.defaultConnection
     }
 };
 
 var waterline = new Waterline();
+waterline.loadCollection(Model.campaigns);
+waterline.loadCollection(Model.players);
 waterline.loadCollection(Model.spells);
 
 module.exports.waterline = waterline;
