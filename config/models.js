@@ -9,10 +9,6 @@ module.exports.campaigns = Waterline.Collection.extend({
         },
         name: 'text',
         descr: 'text',
-        players: {
-            collection: 'players',
-            via: 'campaign'
-        }
     },
     connection: 'default',
     migrate: 'safe',
@@ -28,28 +24,24 @@ module.exports.players = Waterline.Collection.extend({
             type: 'integer',
             primaryKey: true
         },
-        campaignID: 'integer',
-        campaign: {
-            model: 'campaigns'
-        },
+        campaign: 'integer',
         name: 'text',
         race: 'text',
         class: 'text',
         level: 'integer',
         alignment: 'text',
         background: 'text',
-        experience: 'integer',
-        hp_max: 'integer',
+        //experience: 'integer',
+        hpmax: 'integer',
         speed: 'integer',
         ac: 'integer',
-        inspiration: 'integer',
+        insp: 'integer',
         str: 'integer',
         dex: 'integer',
         con: 'integer',
         int: 'integer',
         wis: 'integer',
         cha: 'integer',
-        proficiencies: 'text',
         
     },
     connection: 'default',

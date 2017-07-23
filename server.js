@@ -26,6 +26,18 @@ waterline.waterline.initialize(waterline.config, (err, ontology) => {
         });
     });
 
+    router.get('/campaigns/:campaign/players', (req, res) => {
+        db.getPlayersInCampaign(req.params.campaign).then(res2 => {
+            res.json(res2);
+        });
+    });
+
+    router.get('/campaigns/:campaign/players/:player', (req, res) => {
+        db.getPlayerInCampaign(req.params.campaign, req.params.player).then(res2 => {
+            res.json(res2);
+        });
+    });
+
     app.use('/api', router);
     app.listen(3000);
     console.log("Server listening...");
