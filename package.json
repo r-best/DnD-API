@@ -8,8 +8,6 @@
         "url": "https://github.com/r-best/DnD-API.git"
     },
     "dependencies": {
-        "waterline": "^0.11.11",
-        "sails-postgresql": "^0.11.4",
         "express": "^4.15.3"
     }
 }
