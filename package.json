@@ -7,7 +7,12 @@
         "type": "git",
         "url": "https://github.com/r-best/DnD-API.git"
     },
+    "scripts": {
+        "preinstall": "set OCI_LIB_DIR=C:\\oracle\\instantclient\\sdk\\lib\\msvc; set OCI_INC_DIR=C:\\oracle\\instantclient\\sdk\\include",
+        "postinstall": "copy C:\\oracle\\instantclient\\* node_modules\\oracledb\\build\\Release"
+    },
     "dependencies": {
-        "express": "^4.15.3"
+        "express": "^4.16.2",
+        "oracledb": "^1.13.1"
     }
 }
