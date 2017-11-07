@@ -1,3 +1,4 @@
+const oracledb = require('oracledb');
 const express = require('express');
 const db = require('./db/db.js');
 const config = require(`./config/config.json`);
@@ -9,6 +10,7 @@ oracledb.getConnection(config,
             return;
         }
         console.log(`Connected to database`);
+        exports = connection;
 
         var router = express.Router();
         
@@ -19,7 +21,7 @@ oracledb.getConnection(config,
         });
         
         router.get('/campaigns', (req, res) => {
-            db.getCampaigns().then(res2 => {
+            db.getCampaigns(connection).then(res2 => {
                 res.json(res2);
             });
         });
@@ -47,10 +49,10 @@ oracledb.getConnection(config,
         app.listen(3000);
         console.log("Server listening...");
 
-        console.log(`Server shutting down`);
-        connection.close((err) => {
-            if(err)
-                console.error(err.message);
-        });
+        // console.log(`Server shutting down`);
+        // connection.close((err) => {
+        //     if(err)
+        //         console.error(err.message);
+        // });
     }
 );

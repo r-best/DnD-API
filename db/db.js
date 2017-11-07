@@ -1,5 +1,7 @@
-module.exports.getCampaigns = function getCampaigns(){
-    
+// const connection = require('../index');
+
+module.exports.getCampaigns = function getCampaigns(connection){
+    return connection.execute('SELECT * FROM employees WHERE employee_id = 100');
 }
 
 module.exports.getCampaign = function getCampaign(name){
