@@ -56,6 +56,21 @@ exports.initRouter = function initRouter(connection){
         .catch(err => res.status(500).json(err.message));
     });
 
+    // GET all spells associated with a player
+    router.get('/campaigns/:campaign/players/:player/spells', (req, res) => {
+        connection.execute(`
+            SELECT *
+            FROM spells
+            WHERE name in (
+                SELECT spell_name
+                FROM characterspells
+                WHERE campaign_name = :campaign AND character_name = :player
+            )
+        `, [req.params.campaign, req.params.player])
+        .then(res2 => res.json(format(res2)))
+        .catch(err => res.status(500).json(err.message));
+    });
+
     // GET all spells
     router.get(`/spells`, (req, res) => {
         connection.execute(`
