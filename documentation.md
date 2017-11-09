@@ -25,6 +25,12 @@
 >   * [`GET`](#get-4)
 >   * [`PUT`](#put-2)
 >   * [`DELETE`](#delete-2)
+>* [`/api/campaigns/:campaign/players/:player/attacks`](#apicampaignscampaignplayersplayerattacks)
+>   * [`GET`](#get-4)
+>* [`/api/campaigns/:campaign/players/:player/items/:attack`](#apicampaignscampaignplayersplayerattacksattack)
+>   * [`GET`](#get-4)
+>   * [`PUT`](#put-2)
+>   * [`DELETE`](#delete-2)
 >* [`/api/campaigns/:campaign/players/:player/spells`](#apicampaignscampaignplayersplayerspells)
 >   * [`GET`](#get-4)
 >   * [`PUT`](#put-1)
@@ -214,6 +220,34 @@
 ## `/api/campaigns/:campaign/players/:player/items/:item`
 ### GET
 * **Description:** Get a specific item owned by a character
+  
+  **Response body**:  
+  ```
+  ```
+### PUT
+* **Description:**
+  
+  **Response body**:  
+  ```
+  ```
+### DELETE
+* **Description:**
+  
+  **Response body**:  
+  ```
+  ```
+
+  ## `/api/campaigns/:campaign/players/:player/attacks`
+### GET
+* **Description:** Get all attacks a character knows
+  
+  **Response body**:  
+  ```
+  ```
+
+## `/api/campaigns/:campaign/players/:player/items/:attack`
+### GET
+* **Description:** Get a specific attack known by a character
   
   **Response body**:  
   ```

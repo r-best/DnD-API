@@ -69,6 +69,30 @@ exports.initRouter = (connection, router) => {
         .then(res2 => res.json(format(res2)))
         .catch(err => res.status(500).json(err.message));
     });
+    
+    // GET all attacks a player knows
+    router.get('/campaigns/:campaign/players/:player/attacks', (req, res) => {
+        connection.execute(`
+            SELECT name, descr, atk_bonus, damage, dmg_type
+            FROM attacks
+            WHERE campaign_name = :campaign AND character_name = :player
+        `, [req.params.campaign, req.params.player])
+        .then(res2 => res.json(format(res2)))
+        .catch(err => res.status(500).json(err.message));
+    });
+
+    // GET a specific attack known by a player
+    router.get('/campaigns/:campaign/players/:player/attacks/:attack', (req, res) => {
+        connection.execute(`
+            SELECT name, descr, atk_bonus, damage, dmg_type
+            FROM attacks
+            WHERE campaign_name = :campaign
+            AND character_name = :player
+            AND name = :atack
+        `, [req.params.campaign, req.params.player, req.params.attack])
+        .then(res2 => res.json(format(res2)))
+        .catch(err => res.status(500).json(err.message));
+    });
 
     // GET all spells a player knows
     router.get('/campaigns/:campaign/players/:player/spells', (req, res) => {
