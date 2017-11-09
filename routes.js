@@ -21,7 +21,6 @@ exports.initRouter = connection => {
         if(err)
             console.error(err);
         files.forEach((file, index) => {
-            console.log(file)
             let routeFile = require(`./routes/${file}`)
             routeFile.initRouter(connection, router);
         });

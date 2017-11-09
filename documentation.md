@@ -47,6 +47,12 @@
 >   * [`GET`](#get-11)
 >   * [`PUT`](#put-2)
 >   * [`DELETE`](#delete-2)
+>* [`/api/classes`](#apiclasses)
+>   * [`GET`](#get-4)
+>* [`/api/classes/:class`](#apiclassesclass)
+>   * [`GET`](#get-11)
+>   * [`PUT`](#put-2)
+>   * [`DELETE`](#delete-2)
 
 ## `/api/campaigns`
 ### GET
@@ -412,6 +418,34 @@
     "SCHOOL": "conjuration",
     "CONCENTRATION": 0
   }
+  ```
+### PUT
+* **Description:**
+  
+  **Response body**:  
+  ```
+  ```
+### DELETE
+* **Description:**
+  
+  **Response body**:  
+  ```
+  ```
+
+## `/api/classes`
+### GET
+* **Description:** Get all classes
+  
+  **Response body**:  
+  ```
+  ```
+
+## `/api/classes/:class`
+### GET
+* **Description:** Get a single class by name
+  
+  **Response body**:  
+  ```
   ```
 ### PUT
 * **Description:**
