@@ -151,6 +151,14 @@
   ```
   ```
 
+## `/api/campaigns/:campaign/players/:player/level`
+### GET
+* **Description:** Get all the classes of a character and what levels they are in each
+  
+  **Response body**:  
+  ```
+  ```
+
 ## `/api/campaigns/:campaign/players/:player/spells`
 ### GET
 * **Description:** Get all spells associated with a player
