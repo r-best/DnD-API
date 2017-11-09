@@ -57,11 +57,23 @@ exports.initRouter = function initRouter(connection){
     });
 
     // GET the classes of a character and what levels they are in each
-    router.get('/campaigns/:campaign/players/:player', (req, res) => {
+    router.get('/campaigns/:campaign/players/:player/level', (req, res) => {
         connection.execute(`
             SELECT class_name, level
             FROM characterlevel
             WHERE character_name = :player AND campaign_name = :campaign
+        `, [req.params.player, req.params.campaign])
+        .then(res2 => res.json(format(res2)))
+        .catch(err => res.status(500).json(err.message));
+    });
+    
+    // GET all the abilities of a character
+    router.get('/campaigns/:campaign/players/:player', (req, res) => {
+        connection.execute(`
+            SELECT a.ability_name, a.descr
+            FROM characterabilities c JOIN abilities a
+            ON c.ability_name = a.name
+            WHERE c.character_name = :player AND c.campaign_name = :campaign
         `, [req.params.player, req.params.campaign])
         .then(res2 => res.json(format(res2)))
         .catch(err => res.status(500).json(err.message));
