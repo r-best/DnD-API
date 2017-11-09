@@ -11,6 +11,8 @@
 >   * [`GET`](#get-3)
 >   * [`PUT`](#put-1)
 >   * [`DELETE`](#delete-1)
+>* [`/api/campaigns/:campaign/players/:player/level`](#apicampaignscampaignplayersplayerlevel)
+>   * [`GET`](#get-4)
 >* [`/api/campaigns/:campaign/players/:player/spells`](#apicampaignscampaignplayersplayerspells)
 >   * [`GET`](#get-4)
 >   * [`PUT`](#put-1)

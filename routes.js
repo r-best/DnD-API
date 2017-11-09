@@ -56,6 +56,17 @@ exports.initRouter = function initRouter(connection){
         .catch(err => res.status(500).json(err.message));
     });
 
+    // GET the classes of a character and what levels they are in each
+    router.get('/campaigns/:campaign/players/:player', (req, res) => {
+        connection.execute(`
+            SELECT class_name, level
+            FROM characterlevel
+            WHERE character_name = :player AND campaign_name = :campaign
+        `, [req.params.player, req.params.campaign])
+        .then(res2 => res.json(format(res2)))
+        .catch(err => res.status(500).json(err.message));
+    });
+
     // GET all spells associated with a player
     router.get('/campaigns/:campaign/players/:player/spells', (req, res) => {
         connection.execute(`
