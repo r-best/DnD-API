@@ -68,7 +68,7 @@ exports.initRouter = function initRouter(connection){
     });
     
     // GET all the abilities of a character
-    router.get('/campaigns/:campaign/players/:player', (req, res) => {
+    router.get('/campaigns/:campaign/players/:player/abilities', (req, res) => {
         connection.execute(`
             SELECT a.ability_name, a.descr
             FROM characterabilities c JOIN abilities a
@@ -78,8 +78,32 @@ exports.initRouter = function initRouter(connection){
         .then(res2 => res.json(format(res2)))
         .catch(err => res.status(500).json(err.message));
     });
+    
+    // GET all items a player has
+    router.get('/campaigns/:campaign/players/:player/items', (req, res) => {
+        connection.execute(`
+            SELECT name, descr
+            FROM items
+            WHERE campaign_name = :campaign AND character_name = :player
+        `, [req.params.campaign, req.params.player])
+        .then(res2 => res.json(format(res2)))
+        .catch(err => res.status(500).json(err.message));
+    });
 
-    // GET all spells associated with a player
+    // GET a specific item owned by a player
+    router.get('/campaigns/:campaign/players/:player/items/:item', (req, res) => {
+        connection.execute(`
+            SELECT name, descr
+            FROM items
+            WHERE campaign_name = :campaign
+            AND character_name = :player
+            AND name = :item
+        `, [req.params.campaign, req.params.player, req.params.item])
+        .then(res2 => res.json(format(res2)))
+        .catch(err => res.status(500).json(err.message));
+    });
+
+    // GET all spells a player knows
     router.get('/campaigns/:campaign/players/:player/spells', (req, res) => {
         connection.execute(`
             SELECT *

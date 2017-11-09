@@ -19,6 +19,12 @@
 >   * [`GET`](#get-4)
 >   * [`PUT`](#put-2)
 >   * [`DELETE`](#delete-2)
+>* [`/api/campaigns/:campaign/players/:player/items`](#apicampaignscampaignplayersplayeritems)
+>   * [`GET`](#get-4)
+>* [`/api/campaigns/:campaign/players/:player/items/:item`](#apicampaignscampaignplayersplayeritemsitem)
+>   * [`GET`](#get-4)
+>   * [`PUT`](#put-2)
+>   * [`DELETE`](#delete-2)
 >* [`/api/campaigns/:campaign/players/:player/spells`](#apicampaignscampaignplayersplayerspells)
 >   * [`GET`](#get-4)
 >   * [`PUT`](#put-1)
@@ -180,6 +186,34 @@
 ## `/api/campaigns/:campaign/players/:player/abilities`
 ### GET
 * **Description:** Get all the abilities of a character
+  
+  **Response body**:  
+  ```
+  ```
+### PUT
+* **Description:**
+  
+  **Response body**:  
+  ```
+  ```
+### DELETE
+* **Description:**
+  
+  **Response body**:  
+  ```
+  ```
+
+## `/api/campaigns/:campaign/players/:player/items`
+### GET
+* **Description:** Get all items owned by a character
+  
+  **Response body**:  
+  ```
+  ```
+
+## `/api/campaigns/:campaign/players/:player/items/:item`
+### GET
+* **Description:** Get a specific item owned by a character
   
   **Response body**:  
   ```
