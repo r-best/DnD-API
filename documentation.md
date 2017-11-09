@@ -13,6 +13,8 @@
 >   * [`DELETE`](#delete-1)
 >* [`/api/campaigns/:campaign/players/:player/level`](#apicampaignscampaignplayersplayerlevel)
 >   * [`GET`](#get-4)
+>   * [`PUT`](#put-2)
+>   * [`DELETE`](#delete-2)
 >* [`/api/campaigns/:campaign/players/:player/spells`](#apicampaignscampaignplayersplayerspells)
 >   * [`GET`](#get-4)
 >   * [`PUT`](#put-1)
@@ -154,6 +156,18 @@
 ## `/api/campaigns/:campaign/players/:player/level`
 ### GET
 * **Description:** Get all the classes of a character and what levels they are in each
+  
+  **Response body**:  
+  ```
+  ```
+### PUT
+* **Description:**
+  
+  **Response body**:  
+  ```
+  ```
+### DELETE
+* **Description:**
   
   **Response body**:  
   ```
