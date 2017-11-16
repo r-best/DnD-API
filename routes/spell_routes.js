@@ -7,7 +7,7 @@ exports.initRouter = (connection, router) => {
             SELECT *
             FROM spells
         `, [])
-        .then(res2 => res.json(format(res2)))
+        .then(res2 => res.json(format(res2, true)))
         .catch(err => res.status(500).json(err.message));
     });
 
@@ -32,7 +32,7 @@ exports.initRouter = (connection, router) => {
             FROM spells
             where school = :school
         `, [req.params.school])
-        .then(res2 => res.json(format(res2)))
+        .then(res2 => res.json(format(res2, true)))
         .catch(err => res.status(500).json(err.message));
     });
 
@@ -43,7 +43,7 @@ exports.initRouter = (connection, router) => {
             FROM spells
             WHERE lv = :lv
         `, [req.params.lv])
-        .then(res2 => res.json(format(res2)))
+        .then(res2 => res.json(format(res2, true)))
         .catch(err => res.status(500).json(err.message));
     });
 
@@ -52,9 +52,9 @@ exports.initRouter = (connection, router) => {
         connection.execute(`
             SELECT *
             FROM spells
-            WHERE name = :spell
+            WHERE spell_name = :spell
         `, [req.params.spell])
-        .then(res2 => res.json(format(res2)))
+        .then(res2 => res.json(format(res2, false)))
         .catch(err => res.status(500).json(err.message));
     });
 };

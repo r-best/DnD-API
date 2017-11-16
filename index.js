@@ -14,7 +14,7 @@ oracledb.getConnection(config,
         const app = express();
         app.use((req, res, next) => {
             res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
-            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+            res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, DELETE');
             next();
         });
         app.use('/api', routes.initRouter(connection));

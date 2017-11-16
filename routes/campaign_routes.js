@@ -7,7 +7,7 @@ exports.initRouter = (connection, router) => {
             SELECT *
             FROM campaigns
         `)
-        .then(res2 => res.json(format(res2)))
+        .then(res2 => res.json(format(res2, true)))
         .catch(err => res.status(500).json(err.message));
     });
     
@@ -16,9 +16,9 @@ exports.initRouter = (connection, router) => {
         connection.execute(`
             SELECT *
             FROM campaigns
-            WHERE name = :campaign
+            WHERE campaign_name = :campaign
         `, [req.params.campaign])
-        .then(res2 => res.json(format(res2)))
+        .then(res2 => res.json(format(res2, false)))
         .catch(err => res.status(500).json(err.message));
     });
 };

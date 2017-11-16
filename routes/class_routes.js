@@ -7,7 +7,7 @@ exports.initRouter = (connection, router) => {
             SELECT *
             FROM classes
         `, [])
-        .then(res2 => res.json(format(res2)))
+        .then(res2 => res.json(format(res2, true)))
         .catch(err => res.status(500).json(err.message));
     });
     
@@ -16,9 +16,9 @@ exports.initRouter = (connection, router) => {
         connection.execute(`
             SELECT *
             FROM classes
-            WHERE name = :class
+            WHERE class_name = :class
         `, [req.params.spell])
-        .then(res2 => res.json(format(res2)))
+        .then(res2 => res.json(format(res2, false)))
         .catch(err => res.status(500).json(err.message));
     });
 };
