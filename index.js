@@ -1,7 +1,7 @@
 const oracledb = require('oracledb');
 const express = require('express');
 const routes = require(`./routes.js`);
-const config = require(`./config/config.json`);
+const config = require(`./config/config_local.json`);
 
 oracledb.getConnection(config,
     (err, connection) => {
