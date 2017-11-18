@@ -47,6 +47,8 @@
 >   * [`GET`](#get-11)
 >   * [`PUT`](#put-2)
 >   * [`DELETE`](#delete-2)
+>* [`/api/spells/:spell/classes`](#apispellsspellclasses)
+>   * [`GET`](#get-7)
 >* [`/api/classes`](#apiclasses)
 >   * [`GET`](#get-4)
 >* [`/api/classes/:class`](#apiclassesclass)
@@ -429,6 +431,14 @@
 * **Description:**
   
   **Response body**:  
+  ```
+  ```
+
+## `/api/spells/:spell/classes`
+### GET
+* **Description:** Get all classes that can learn a spell
+  
+  **Response body**:
   ```
   ```
 

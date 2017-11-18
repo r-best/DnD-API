@@ -57,4 +57,16 @@ exports.initRouter = (connection, router) => {
         .then(res2 => res.json(format(res2, false)))
         .catch(err => res.status(500).json(err.message));
     });
+    
+    // GET all classes that can learn a spell
+    router.get(`/spells/:spell/classes`, (req, res) => {
+        connection.execute(`
+            SELECT distinct c.class_name
+            FROM classspells cs join classes c
+            ON cs.class_name = c.class_name
+            WHERE cs.spell_name = :spell
+        `, [req.params.spell])
+        .then(res2 => res.json(format(res2, true)))
+        .catch(err => res.status(500).json(err.message));
+    });
 };
