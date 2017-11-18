@@ -5,7 +5,7 @@ exports.initRouter = (connection, router) => {
     router.get(`/spells`, (req, res) => {
         connection.execute(`
             SELECT *
-            FROM spells
+            FROM spells natural left join material
         `, [])
         .then(res2 => res.json(format(res2, true)))
         .catch(err => res.status(500).json(err.message));
@@ -29,7 +29,7 @@ exports.initRouter = (connection, router) => {
     router.get(`/spells/schools/:school`, (req, res) => {
         connection.execute(`
             SELECT *
-            FROM spells
+            FROM spells natural left join material
             where school = :school
         `, [req.params.school])
         .then(res2 => res.json(format(res2, true)))
@@ -40,7 +40,7 @@ exports.initRouter = (connection, router) => {
     router.get(`/spells/level/:lv`, (req, res) => {
         connection.execute(`
             SELECT *
-            FROM spells
+            FROM spells natural left join material
             WHERE lv = :lv
         `, [req.params.lv])
         .then(res2 => res.json(format(res2, true)))
@@ -51,7 +51,7 @@ exports.initRouter = (connection, router) => {
     router.get(`/spells/:spell`, (req, res) => {
         connection.execute(`
             SELECT *
-            FROM spells
+            FROM spells natural left join material
             WHERE spell_name = :spell
         `, [req.params.spell])
         .then(res2 => res.json(format(res2, false)))
