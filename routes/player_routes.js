@@ -99,7 +99,7 @@ exports.initRouter = (connection, router) => {
         connection.execute(`
             SELECT *
             FROM spells
-            WHERE name in (
+            WHERE spell_name in (
                 SELECT spell_name
                 FROM characterspells
                 WHERE campaign_name = :campaign AND character_name = :player
