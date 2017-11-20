@@ -39,7 +39,7 @@ exports.initRouter = (connection, router) => {
         connection.execute(`
             SELECT a.ability_name, a.descr
             FROM characterabilities c JOIN abilities a
-            ON c.ability_name = a.name
+            ON c.ability_name = a.ability_name
             WHERE c.character_name = :player AND c.campaign_name = :campaign
         `, [req.params.player, req.params.campaign])
         .then(res2 => res.json(format(res2, true)))
@@ -49,7 +49,7 @@ exports.initRouter = (connection, router) => {
     // GET all items a player has
     router.get('/campaigns/:campaign/players/:player/items', (req, res) => {
         connection.execute(`
-            SELECT item_name, descr
+            SELECT item_name, descr, quantity
             FROM items
             WHERE campaign_name = :campaign AND character_name = :player
         `, [req.params.campaign, req.params.player])
