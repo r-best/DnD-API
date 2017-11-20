@@ -1,4 +1,6 @@
-const format = require(`../routes.js`).format;
+const routes = require(`../routes.js`);
+const format = routes.format;
+const validate = routes.validate;
 
 exports.initRouter = (connection, router) => {
     // GET all campaigns
@@ -13,12 +15,13 @@ exports.initRouter = (connection, router) => {
     
     // GET a single campaign by name
     router.get('/campaigns/:campaign', (req, res) => {
-        connection.execute(`
-            SELECT *
-            FROM campaigns
-            WHERE campaign_name = :campaign
-        `, [req.params.campaign])
-        .then(res2 => res.json(format(res2, false)))
-        .catch(err => res.status(500).json(err.message));
+        if(validate(req.params, res))
+            connection.execute(`
+                SELECT *
+                FROM campaigns
+                WHERE campaign_name = :campaign
+            `, [req.params.campaign])
+            .then(res2 => res.json(format(res2, false)))
+            .catch(err => res.status(500).json(err.message));
     });
 };

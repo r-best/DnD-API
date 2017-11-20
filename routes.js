@@ -54,3 +54,14 @@ exports.format = function format(data, expectList){
     }
     return formattedData;
 }
+
+exports.validate = function validate(params, res){
+    let valid = new RegExp(`^[A-Za-z0-9-\\s]*$`); // Only allow letters, numbers, hyphens, and spaces
+    for(let param of Object.keys(params)){
+        if(!valid.test(params[param])){
+            res.status(402).json(`'${params[param]}' is not a acceptable parameter. Please use only letters, numbers, hyphens, and spaces.`)
+            return false;
+        }
+    }
+    return true;
+}
