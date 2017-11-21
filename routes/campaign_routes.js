@@ -32,6 +32,13 @@ exports.initRouter = (connection, router) => {
                 VALUES (:campaign)
             `, [req.params.campaign])
             .then(res2 => res.json(res2))
-            .catch(err => res.status(500).json(err));
+            .catch(err => {
+                let code = err.message.split(` `)[0];
+                code = code.substr(0, code.length-1);
+                if(code == `ORA-00001`)
+                    return res.status(400).json(`Campaign '${req.params.campaign}' already exists!`);
+                else
+                    return res.status(500).json(err);
+            });
     });
 };
