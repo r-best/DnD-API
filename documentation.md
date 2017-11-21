@@ -55,6 +55,10 @@
 >   * [`GET`](#get-11)
 >   * [`PUT`](#put-2)
 >   * [`DELETE`](#delete-2)
+>* [`/api/races`](#apiraces)
+>   * [`GET`](#get-12)
+>* [`/api/races/:race`](#apiracesrace)
+>   * [`GET`](#get-11)
 
 ## `/api/campaigns`
 ### GET
@@ -465,6 +469,22 @@
   ```
 ### DELETE
 * **Description:**
+  
+  **Response body**:  
+  ```
+  ```
+
+## `/api/races/`
+### GET
+* **Description:** Get all races
+  
+  **Response body**:  
+  ```
+  ```
+
+## `/api/races/:race`
+### GET
+* **Description:** Get a single race by name
   
   **Response body**:  
   ```
