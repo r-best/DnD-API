@@ -38,7 +38,17 @@ exports.initRouter = (connection, router) => {
                 if(code == `ORA-00001`)
                     return res.status(400).json(`Campaign '${req.params.campaign}' already exists!`);
                 else
-                    return res.status(500).json(err);
+                    return res.status(500).json(err.message);
             });
+    });
+
+    router.delete(`/campaigns/:campaign`, (req, res) => {
+        if(validate(req.params, res))
+            connection.execute(`
+                DELETE FROM campaigns
+                WHERE campaign_name = :campaign
+            `, [req.params.campaign])
+            .then(res2 => res.json(res2))
+            .catch(err => res.status(500).json(err.message));
     });
 };
