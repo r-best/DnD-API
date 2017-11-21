@@ -24,4 +24,14 @@ exports.initRouter = (connection, router) => {
             .then(res2 => res.json(format(res2, false)))
             .catch(err => res.status(500).json(err.message));
     });
+
+    router.put(`/campaigns/:campaign`, (req, res) => {
+        if(validate(req.params, res))
+            connection.execute(`
+                INSERT INTO campaigns
+                VALUES (:campaign)
+            `, [req.params.campaign])
+            .then(res2 => res.json(res2))
+            .catch(err => res.status(500).json(err));
+    });
 };

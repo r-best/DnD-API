@@ -3,6 +3,7 @@ const express = require('express');
 const routes = require(`./routes.js`);
 const config = require(`./config/config_local.json`);
 
+oracledb.autoCommit = true;
 oracledb.getConnection(config,
     (err, connection) => {
         if(err){
