@@ -18,10 +18,22 @@ exports.initRouter = (connection, router) => {
         if(validate(req.params, res))
             connection.execute(`
                 SELECT *
-                FROM race
+                FROM races
                 WHERE race_name = :race
             `, [req.params.race])
             .then(res2 => res.json(format(res2, false)))
+            .catch(err => res.status(500).json(err.message));
+    });
+
+    // GET all abilities associated with a race
+    router.get(`/races/:race/abilities`, (req, res) => {
+        if(validate(req.params, res))
+            connection.execute(`
+                SELECT *
+                FROM raceabilities
+                WHERE race_name = :race
+            `, [req.params.race])
+            .then(res2 => res.json(format(res2, true)))
             .catch(err => res.status(500).json(err.message));
     });
 };

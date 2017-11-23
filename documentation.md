@@ -55,9 +55,15 @@
 >   * [`GET`](#get-11)
 >   * [`PUT`](#put-2)
 >   * [`DELETE`](#delete-2)
+>* [`/api/classes/:class/spells`](#apiclassesclassspells)
+>   * [`GET`](#get-11)
+>* [`/api/classes/:class/abilities`](#apiclassesclassabilities)
+>   * [`GET`](#get-11)
 >* [`/api/races`](#apiraces)
 >   * [`GET`](#get-12)
 >* [`/api/races/:race`](#apiracesrace)
+>   * [`GET`](#get-11)
+>* [`/api/races/:race/abilities`](#apiracesraceabilities)
 >   * [`GET`](#get-11)
 
 ## `/api/campaigns`
@@ -474,6 +480,22 @@
   ```
   ```
 
+## `/api/classes/:class/spells`
+### GET
+* **Description:** Get all spells a class can learn
+  
+  **Response body**:  
+  ```
+  ```
+
+## `/api/classes/:class/abilities`
+### GET
+* **Description:** Get all abilities associated with a class
+  
+  **Response body**:  
+  ```
+  ```
+
 ## `/api/races/`
 ### GET
 * **Description:** Get all races
@@ -485,6 +507,14 @@
 ## `/api/races/:race`
 ### GET
 * **Description:** Get a single race by name
+  
+  **Response body**:  
+  ```
+  ```
+
+## `/api/races/:race/abilities`
+### GET
+* **Description:** Get all abilities associated with a race
   
   **Response body**:  
   ```
