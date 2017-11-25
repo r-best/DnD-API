@@ -10,7 +10,7 @@ exports.initRouter = (connection, router) => {
             FROM classes
         `, [])
         .then(res2 => res.json(format(res2, true)))
-        .catch(err => res.status(500).json(err.message));
+        .catch(err => res.status(500).json({err:err.message}));
     });
     
     // GET a single class by name
@@ -20,9 +20,14 @@ exports.initRouter = (connection, router) => {
                 SELECT *
                 FROM classes
                 WHERE class_name = :class
-            `, [req.params.spell])
-            .then(res2 => res.json(format(res2, false)))
-            .catch(err => res.status(500).json(err.message));
+            `, [req.params.class])
+            .then(res2 => {
+                if(res2.rows.length === 0)
+                    res.status(400).json({err:`Class '${req.params.class}' does not exist`});
+                else
+                    res.json(format(res2, false));
+            })
+            .catch(err => res.status(500).json({err:err.message}));
     });
 
     // GET all spells a class can learn
@@ -33,8 +38,13 @@ exports.initRouter = (connection, router) => {
                 FROM classspells natural join spells
                 WHERE class_name = :class
             `, [req.params.class])
-            .then(res2 => res.json(format(res2, true)))
-            .catch(err => res.status(500).json(err.message));
+            .then(res2 => {
+                if(res2.rows.length === 0)
+                    res.status(400).json({err:`Class '${req.params.class}' does not exist`});
+                else
+                    res.json(format(res2, true));
+            })
+            .catch(err => res.status(500).json({err:err.message}));
     });
 
     // GET all abilities associated with a class
@@ -45,7 +55,12 @@ exports.initRouter = (connection, router) => {
                 FROM classabilities
                 WHERE class_name = :class
             `, [req.params.class])
-            .then(res2 => res.json(format(res2, true)))
-            .catch(err => res.status(500).json(err.message));
+            .then(res2 => {
+                if(res2.rows.length === 0)
+                    res.status(400).json({err:`Class '${req.params.class}' does not exist`});
+                else
+                    res.json(format(res2, true));
+            })
+            .catch(err => res.status(500).json({err:err.message}));
     });
 };

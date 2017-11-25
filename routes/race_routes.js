@@ -10,7 +10,7 @@ exports.initRouter = (connection, router) => {
             FROM races
         `)
         .then(res2 => res.json(format(res2, true)))
-        .catch(err => res.status(500).json(err.message));
+        .catch(err => res.status(500).json({err:err.message}));
     });
     
     // GET a single race by name
@@ -21,8 +21,13 @@ exports.initRouter = (connection, router) => {
                 FROM races
                 WHERE race_name = :race
             `, [req.params.race])
-            .then(res2 => res.json(format(res2, false)))
-            .catch(err => res.status(500).json(err.message));
+            .then(res2 => {
+                if(res2.rows.length === 0)
+                    res.status(400).json({err:`Race '${req.params.race}' does not exist`});
+                else
+                    res.json(format(res2, false));
+            })
+            .catch(err => res.status(500).json({err:err.message}));
     });
 
     // GET all abilities associated with a race
@@ -33,7 +38,12 @@ exports.initRouter = (connection, router) => {
                 FROM raceabilities
                 WHERE race_name = :race
             `, [req.params.race])
-            .then(res2 => res.json(format(res2, true)))
-            .catch(err => res.status(500).json(err.message));
+            .then(res2 => {
+                if(res2.rows.length === 0)
+                    res.status(400).json({err:`Race '${req.params.race}' does not exist`});
+                else
+                    res.json(format(res2, false));
+            })
+            .catch(err => res.status(500).json({err:err.message}));
     });
 };

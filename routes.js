@@ -55,8 +55,12 @@ exports.format = function format(data, expectList){
     return formattedData;
 }
 
+/*
+    Every route that takes parameters calls this method at the start.
+    It checks the parameters and returns a 402 if it doesn't like them
+*/
 exports.validate = function validate(params, res){
-    let valid = new RegExp(`^[A-Za-z0-9-\\s]*$`); // Only allow letters, numbers, hyphens, and spaces
+    let valid = new RegExp(`^[A-Za-z0-9-\\s]+$`); // Only allow letters, numbers, hyphens, and spaces
     for(let param of Object.keys(params)){
         if(!valid.test(params[param])){
             res.status(402).json(`'${params[param]}' is not a acceptable parameter. Please use only letters, numbers, hyphens, and spaces.`)

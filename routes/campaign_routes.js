@@ -10,7 +10,7 @@ exports.initRouter = (connection, router) => {
             FROM campaigns
         `)
         .then(res2 => res.json(format(res2, true)))
-        .catch(err => res.status(500).json(err.message));
+        .catch(err => res.status(500).json({err:err.message}));
     });
     
     // GET a single campaign by name
@@ -21,8 +21,13 @@ exports.initRouter = (connection, router) => {
                 FROM campaigns
                 WHERE campaign_name = :campaign
             `, [req.params.campaign])
-            .then(res2 => res.json(format(res2, false)))
-            .catch(err => res.status(500).json(err.message));
+            .then(res2 => {
+                if(res2.rows.length === 0)
+                    res.status(400).json({err:`Campaign '${req.params.campaign}' does not exist`});
+                else
+                    res.json(format(res2, false));
+            })
+            .catch(err => res.status(500).json({err:err.message}));
     });
 
     router.put(`/campaigns/:campaign`, (req, res) => {
@@ -36,9 +41,9 @@ exports.initRouter = (connection, router) => {
                 let code = err.message.split(` `)[0];
                 code = code.substr(0, code.length-1);
                 if(code == `ORA-00001`)
-                    return res.status(400).json(`Campaign '${req.params.campaign}' already exists!`);
+                    return res.status(400).json({err:`Campaign '${req.params.campaign}' already exists!`});
                 else
-                    return res.status(500).json(err.message);
+                    return res.status(500).json({err:err.message});
             });
     });
 
@@ -48,7 +53,14 @@ exports.initRouter = (connection, router) => {
                 DELETE FROM campaigns
                 WHERE campaign_name = :campaign
             `, [req.params.campaign])
-            .then(res2 => res.json(res2))
-            .catch(err => res.status(500).json(err.message));
+            .then(res2 => {
+                if(res2.rowsAffected == 0)
+                    res.status(400).json({err:`Campaign '${req.params.campaign}' does not exist`});
+                else if(res2.rowsAffected == 1)
+                    res.json(`Campaign '${req.params.campaign}' successfully deleted`);
+                else
+                    res.json({err:`I don't know how, but you somehow deleted more than one campaign with that request. Thanks for breaking my api, you get a 200 response because TECHNICALLY you deleted the campaign(s) you wanted to.`});
+            })
+            .catch(err => res.status(500).json({err:err.message}));
     });
 };

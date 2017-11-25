@@ -11,8 +11,13 @@ exports.initRouter = (connection, router) => {
                 FROM characters
                 WHERE campaign_name = :campaign
             `, [req.params.campaign])
-            .then(res2 => res.json(format(res2, true)))
-            .catch(err => res.status(500).json(err.message));
+            .then(res2 => {
+                if(res2.rows.length === 0)
+                    res.status(400).json({err:`Campaign '${req.params.campaign}' either does not exist or has no players!`});
+                else
+                    res.json(format(res2, true));
+            })
+            .catch(err => res.status(500).json({err:err.message}));
     });
     
     // GET a single player in a campaign by name
@@ -23,8 +28,13 @@ exports.initRouter = (connection, router) => {
                 FROM characters
                 WHERE character_name = :player AND campaign_name = :campaign
             `, [req.params.player, req.params.campaign])
-            .then(res2 => res.json(format(res2, false)))
-            .catch(err => res.status(500).json(err.message));
+            .then(res2 => {
+                if(res2.rows.length === 0)
+                    res.status(400).json({err:`Player '${req.params.player}' does not exist in campaign '${req.params.campaign}'`});
+                else
+                    res.json(format(res2, false));
+            })
+            .catch(err => res.status(500).json({err:err.message}));
     });
 
     // GET the classes of a character and what levels they are in each
@@ -35,8 +45,13 @@ exports.initRouter = (connection, router) => {
                 FROM characterlevel
                 WHERE character_name = :player AND campaign_name = :campaign
             `, [req.params.player, req.params.campaign])
-            .then(res2 => res.json(format(res2, true)))
-            .catch(err => res.status(500).json(err.message));
+            .then(res2 => {
+                if(res2.rows.length === 0)
+                    res.status(400).json({err:`Player '${req.params.player}' does not exist in campaign '${req.params.campaign}'`});
+                else
+                    res.json(format(res2, true));
+            })
+            .catch(err => res.status(500).json({err:err.message}));
     });
     
     // GET all the abilities of a character
@@ -49,7 +64,7 @@ exports.initRouter = (connection, router) => {
                 WHERE c.character_name = :player AND c.campaign_name = :campaign
             `, [req.params.player, req.params.campaign])
             .then(res2 => res.json(format(res2, true)))
-            .catch(err => res.status(500).json(err.message));
+            .catch(err => res.status(500).json({err:err.message}));
     });
     
     // GET all items a player has
@@ -61,7 +76,7 @@ exports.initRouter = (connection, router) => {
                 WHERE campaign_name = :campaign AND character_name = :player
             `, [req.params.campaign, req.params.player])
             .then(res2 => res.json(format(res2, true)))
-            .catch(err => res.status(500).json(err.message));
+            .catch(err => res.status(500).json({err:err.message}));
     });
 
     // GET a specific item owned by a player
@@ -74,8 +89,13 @@ exports.initRouter = (connection, router) => {
                 AND character_name = :player
                 AND item_name = :item
             `, [req.params.campaign, req.params.player, req.params.item])
-            .then(res2 => res.json(format(res2, false)))
-            .catch(err => res.status(500).json(err.message));
+            .then(res2 => {
+                if(res2.rows.length === 0)
+                    res.status(400).json({err:`There are several possibilities here and I'm on a time limit. Either campaign '${req.params.campaign}' doesn't exist, player '${req.params.player}' does not exist in it, or the player doesn't have item '${req.params.item}'`});
+                else
+                    res.json(format(res2, false));
+            })
+            .catch(err => res.status(500).json({err:err.message}));
     });
     
     // GET all attacks a player knows
@@ -87,7 +107,7 @@ exports.initRouter = (connection, router) => {
                 WHERE campaign_name = :campaign AND character_name = :player
             `, [req.params.campaign, req.params.player])
             .then(res2 => res.json(format(res2, true)))
-            .catch(err => res.status(500).json(err.message));
+            .catch(err => res.status(500).json({err:err.message}));
     });
 
     // GET a specific attack known by a player
@@ -100,7 +120,12 @@ exports.initRouter = (connection, router) => {
                 AND character_name = :player
                 AND attack_name = :atack
             `, [req.params.campaign, req.params.player, req.params.attack])
-            .then(res2 => res.json(format(res2, false)))
+            .then(res2 => {
+                if(res2.rows.length === 0)
+                    res.status(400).json({err:`There are several possibilities here and I'm on a time limit. Either campaign '${req.params.campaign}' doesn't exist, player '${req.params.player}' does not exist in it, or the player doesn't have attack '${req.params.attack}'`});
+                else
+                    res.json(format(res2, false));
+            })
             .catch(err => res.status(500).json(err.message));
     });
 
