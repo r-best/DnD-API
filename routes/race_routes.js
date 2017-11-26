@@ -38,7 +38,7 @@ exports.initRouter = (connection, router) => {
                 FROM raceabilities
                 WHERE race_name = :race
             `, [req.params.race])
-            .then(res2 => res.json(format(res2, false)))
+            .then(res2 => res.json(format(res2, true)))
             .catch(err => res.status(500).json({err:err.message}));
     });
 };
