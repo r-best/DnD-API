@@ -12,6 +12,7 @@
         "postinstall": "copy ..\\instantclient\\* node_modules\\oracledb\\build\\Release"
     },
     "dependencies": {
+        "body-parser": "^1.18.2",
         "express": "^4.16.2",
         "oracledb": "^1.13.1"
     }
