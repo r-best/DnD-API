@@ -96,4 +96,4 @@ exports.initRouter = (connection, router) => {
             })
             .catch(err => res.status(500).json({err:err.message}));
     });
-}
+};
