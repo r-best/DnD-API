@@ -10,31 +10,31 @@ exports.initRouter = (connection, router) => {
                 WHERE campaign_name = :campaign
                 AND character_name = :player
             `, [req.params.campaign, req.params.player])
-            .then(res => {
+            .then(() => {
                 connection.execute(`
                     DELETE FROM characterabilities
                     WHERE campaign_name = :campaign
                     AND character_name = :player
                 `, [req.params.campaign, req.params.player])
-                .then(res => {
+                .then(() => {
                     connection.execute(`
                         DELETE FROM characterspells
                         WHERE campaign_name = :campaign
                         AND character_name = :player
                     `, [req.params.campaign, req.params.player])
-                    .then(res => {
+                    .then(() => {
                         connection.execute(`
                             DELETE FROM items
                             WHERE campaign_name = :campaign
                             AND character_name = :player
                         `, [req.params.campaign, req.params.player])
-                        .then(res => {
+                        .then(() => {
                             connection.execute(`
                                 DELETE FROM characters
                                 WHERE campaign_name = :campaign
                                 AND character_name = :player
                             `, [req.params.campaign, req.params.player])
-                            .then(res => {
+                            .then(() => {
                                 res.json(`Player ${req.params.player} successfully deleted from campaign ${req.params.campaign}`);
                             });
                         });
