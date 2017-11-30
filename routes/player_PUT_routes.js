@@ -4,7 +4,8 @@ const validate = routes.validate;
 const error = routes.error;
 
 const db_campaigns = require(`../db/campaigns.js`);
-const db_players = require(`../db/players_PUT.js`);
+const db_players_GET = require(`../db/players_GET.js`);
+const db_players_PUT = require(`../db/players_PUT.js`);
 const db_shared = require(`../db/shared.js`);
 
 function validatePlayer(player, res){
@@ -48,20 +49,20 @@ exports.initRouter = (connection, router) => {
                 else // Else, check that player doesn't already exist
                     db_players_GET.getPlayer(connection, req.params.campaign, req.params.player)
                     .then(res3 => {
-                        if(res3 !== []) // If it does, fail
+                        if(res3.length !== 0) // If it does, fail
                             res.status(400).json({err:`Player '${req.params.player}' already exists in campaign ${req.params.campaign}!`});
                         else // Else, attempt to put player
-                            db_players.putPlayer(connection, req.params.campaign, req.body)
+                            db_players_PUT.putPlayer(connection, req.params.campaign, req.body)
                             .then(res3 => {
                                 if(res3.rowsAffected === 0) // If player was failed to insert without giving an error, give up.
                                     res.status(500).json({err:`1Player was not inserted and I don't know why, the code shouldn't be able to reach this point`});
                                 else // Else, attempt to put character level
-                                    db_players.putPlayerLevel(connection, req.params.campaign, req.body.CHARACTER_NAME, req.body.CLASS_NAME)
+                                    db_players_PUT.putPlayerLevel(connection, req.params.campaign, req.body.CHARACTER_NAME, req.body.CLASS_NAME)
                                     .then(res4 => {
                                         if(res4.rowsAffected === 0) // If player level failed to insert without giving an error, die.
                                             res.status(500).json({err:`2Player was not inserted and I don't know why, the code shouldn't be able to reach this point`});
                                         else // Else attempt to insert abilities
-                                            db_players.putPlayerAbilities(connection, req.params.campaign, req.body.CHARACTER_NAME, req.body.ABILITIES)
+                                            db_players_PUT.putPlayerAbilities(connection, req.params.campaign, req.body.CHARACTER_NAME, req.body.ABILITIES)
                                             .then(res5 => {
                                                 let flag = true;
                                                 // If any of the ability inserts failed, fail
@@ -74,8 +75,7 @@ exports.initRouter = (connection, router) => {
                                                 }
                                                 // Else attempt to insert spells
                                                 if(flag){
-                                                    console.log('aaaaaa')
-                                                    db_players.putPlayerSpells(connection, req.params.campaign, req.body.CHARACTER_NAME, req.body.SPELLS)
+                                                    db_players_PUT.putPlayerSpells(connection, req.params.campaign, req.body.CHARACTER_NAME, req.body.SPELLS)
                                                     .then(res6 => {
                                                         // If any of the spell inserts failed, fail
                                                         for(let i = 0; i < res6.length; i++){
