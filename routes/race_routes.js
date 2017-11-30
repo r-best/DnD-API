@@ -1,6 +1,7 @@
 const routes = require(`../routes.js`);
 const format = routes.format;
 const validate = routes.validate;
+const error = routes.error;
 
 exports.initRouter = (connection, router) => {
     // GET all races
@@ -10,7 +11,7 @@ exports.initRouter = (connection, router) => {
             FROM races
         `)
         .then(res2 => res.json(format(res2, true)))
-        .catch(err => res.status(500).json({err:err.message}));
+        .catch(err => error(err.message, res));
     });
     
     // GET a single race by name
@@ -27,7 +28,7 @@ exports.initRouter = (connection, router) => {
                 else
                     res.json(format(res2, false));
             })
-            .catch(err => res.status(500).json({err:err.message}));
+            .catch(err => error(err.message, res));
     });
 
     // GET all abilities associated with a race
@@ -39,6 +40,6 @@ exports.initRouter = (connection, router) => {
                 WHERE race_name = :race
             `, [req.params.race])
             .then(res2 => res.json(format(res2, true)))
-            .catch(err => res.status(500).json({err:err.message}));
+            .catch(err => error(err.message, res));
     });
 };

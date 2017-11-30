@@ -53,7 +53,7 @@ exports.format = function format(data, expectList){
         formattedData = formattedData[0];
     }
     return formattedData;
-}
+};
 
 /*
     Every route that takes parameters calls this method at the start.
@@ -68,4 +68,16 @@ exports.validate = function validate(params, res){
         }
     }
     return true;
-}
+};
+
+/*
+    Last resort error catcher to stop Oracle error messages from
+    getting sent to the client (logs them to this program's console instead)
+*/
+exports.error = function error(err, res){
+    console.error(`Error on /campaigns:\n${err}`);
+    res.status(500).json(`
+        Sorry I can't provide you with a better error message, 
+        I'm too scared you'll glean some secret information from it and use it to break my program`
+    );
+};

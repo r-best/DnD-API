@@ -1,6 +1,7 @@
 const routes = require(`../routes.js`);
 const format = routes.format;
 const validate = routes.validate;
+const error = routes.error;
 
 exports.initRouter = (connection, router) => {
     // DELETE a campaign
@@ -18,6 +19,6 @@ exports.initRouter = (connection, router) => {
                 else
                     res.json({err:`I don't know how, but you somehow deleted more than one campaign with that request. Thanks for breaking my api, you get a 200 response because TECHNICALLY you deleted the campaign(s) you wanted to.`});
             })
-            .catch(err => res.status(500).json({err:err.message}));
+            .catch(err => error(err.message, res));
     });
 }

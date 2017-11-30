@@ -1,6 +1,7 @@
 const routes = require(`../routes.js`);
 const format = routes.format;
 const validate = routes.validate;
+const error = routes.error;
 
 exports.initRouter = (connection, router) => {
     // GET all spells
@@ -10,7 +11,7 @@ exports.initRouter = (connection, router) => {
             FROM spells natural left join material
         `, [])
         .then(res2 => res.json(format(res2, true)))
-        .catch(err => res.status(500).json({err:err.message}));
+        .catch(err => error(err.message, res));
     });
 
     // GET all spell schools
@@ -41,7 +42,7 @@ exports.initRouter = (connection, router) => {
                 else
                     res.json(format(res2, true));
             })
-            .catch(err => res.status(500).json({err:err.message}));
+            .catch(err => error(err.message, res));
     });
 
     // GET all spells of a certain level
@@ -58,7 +59,7 @@ exports.initRouter = (connection, router) => {
                 else
                     res.json(format(res2, true));
             })
-            .catch(err => res.status(500).json({err:err.message}));
+            .catch(err => error(err.message, res));
     });
 
     // GET a single spell by name
@@ -75,7 +76,7 @@ exports.initRouter = (connection, router) => {
                 else
                     res.json(format(res2, false));
             })
-            .catch(err => res.status(500).json({err:err.message}));
+            .catch(err => error(err.message, res));
     });
     
     // GET all classes that can learn a spell
@@ -93,6 +94,6 @@ exports.initRouter = (connection, router) => {
                 else
                     res.json(format(res2, true));
             })
-            .catch(err => res.status(500).json(err.message));
+            .catch(err => error(err.message, res));
     });
 };

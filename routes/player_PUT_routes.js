@@ -1,6 +1,7 @@
 const routes = require(`../routes.js`);
 const format = routes.format;
 const validate = routes.validate;
+const error = routes.error;
 
 function validatePlayer(player, res){
     let pattern = new RegExp(`^[A-Za-z0-9-//s]+`);
@@ -81,7 +82,7 @@ exports.initRouter = (connection, router) => {
                             VALUES (:CHARACTER_NAME, :campaign, :ABILITY_NAME)
                         `, [req.body.CHARACTER_NAME, req.params.campaign, ability]).then(res4 => {
     
-                        }).catch(err => res.status(500).json({err:err.message}));
+                        }).catch(err => error(err.message, res));
                     }
                     for(spell of req.body.SPELLS){
                         connection.execute(`
@@ -89,11 +90,11 @@ exports.initRouter = (connection, router) => {
                             VALUES (:CHARACTER_NAME, :campaign, :SPELL_NAME)
                         `, [req.body.CHARACTER_NAME, req.params.campaign, spell]).then(res4 => {
     
-                        }).catch(err => res.status(500).json({err:err.message}));
+                        }).catch(err => error(err.message, res));
                     }
                 })
                 res.json(res2)
             })
-            .catch(err => res.status(500).json({err:err.message}));
+            .catch(err => error(err.message, res));
     });
 };

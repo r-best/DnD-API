@@ -1,6 +1,7 @@
 const routes = require(`../routes.js`);
 const format = routes.format;
 const validate = routes.validate;
+const error = routes.error;
 
 exports.initRouter = (connection, router) => {
     // GET all players in a campaign
@@ -17,7 +18,7 @@ exports.initRouter = (connection, router) => {
                 else
                     res.json(format(res2, true));
             })
-            .catch(err => res.status(500).json({err:err.message}));
+            .catch(err => error(err.message, res));
     });
     
     // GET a single player in a campaign by name
@@ -34,7 +35,7 @@ exports.initRouter = (connection, router) => {
                 else
                     res.json(format(res2, false));
             })
-            .catch(err => res.status(500).json({err:err.message}));
+            .catch(err => error(err.message, res));
     });
 
     // GET the classes of a character and what levels they are in each
@@ -51,7 +52,7 @@ exports.initRouter = (connection, router) => {
                 else
                     res.json(format(res2, true));
             })
-            .catch(err => res.status(500).json({err:err.message}));
+            .catch(err => error(err.message, res));
     });
     
     // GET all the abilities of a character
@@ -64,7 +65,7 @@ exports.initRouter = (connection, router) => {
                 WHERE c.character_name = :player AND c.campaign_name = :campaign
             `, [req.params.player, req.params.campaign])
             .then(res2 => res.json(format(res2, true)))
-            .catch(err => res.status(500).json({err:err.message}));
+            .catch(err => error(err.message, res));
     });
     
     // GET all items a player has
@@ -76,7 +77,7 @@ exports.initRouter = (connection, router) => {
                 WHERE campaign_name = :campaign AND character_name = :player
             `, [req.params.campaign, req.params.player])
             .then(res2 => res.json(format(res2, true)))
-            .catch(err => res.status(500).json({err:err.message}));
+            .catch(err => error(err.message, res));
     });
 
     // GET a specific item owned by a player
@@ -95,7 +96,7 @@ exports.initRouter = (connection, router) => {
                 else
                     res.json(format(res2, false));
             })
-            .catch(err => res.status(500).json({err:err.message}));
+            .catch(err => error(err.message, res));
     });
     
     // GET all attacks a player knows
@@ -107,7 +108,7 @@ exports.initRouter = (connection, router) => {
                 WHERE campaign_name = :campaign AND character_name = :player
             `, [req.params.campaign, req.params.player])
             .then(res2 => res.json(format(res2, true)))
-            .catch(err => res.status(500).json({err:err.message}));
+            .catch(err => error(err.message, res));
     });
 
     // GET a specific attack known by a player
@@ -126,7 +127,7 @@ exports.initRouter = (connection, router) => {
                 else
                     res.json(format(res2, false));
             })
-            .catch(err => res.status(500).json(err.message));
+            .catch(err => error(err.message, res));
     });
 
     // GET all spells a player knows
@@ -142,6 +143,6 @@ exports.initRouter = (connection, router) => {
                 )
             `, [req.params.campaign, req.params.player])
             .then(res2 => res.json(format(res2, true)))
-            .catch(err => res.status(500).json(err.message));
+            .catch(err => error(err.message, res));
     });
 };

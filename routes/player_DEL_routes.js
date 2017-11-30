@@ -1,6 +1,7 @@
 const routes = require(`../routes.js`);
 const format = routes.format;
 const validate = routes.validate;
+const error = routes.error;
 
 exports.initRouter = (connection, router) => {
     router.delete(`/campaigns/:campaign/players/:player`, (req, res) => {
@@ -41,6 +42,6 @@ exports.initRouter = (connection, router) => {
                     });
                 });
             })
-            .catch(err => res.status(500).json({err:err.message}))
+            .catch(err => error(err.message, res))
     });
 };

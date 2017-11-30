@@ -1,5 +1,6 @@
 const routes = require(`../routes.js`);
 const validate = routes.validate;
+const error = routes.error;
 
 exports.initRouter = (connection, router) => {
     router.put(`/campaigns/:campaign`, (req, res) => {
@@ -15,7 +16,7 @@ exports.initRouter = (connection, router) => {
                 if(code == `ORA-00001`)
                     return res.status(400).json({err:`Campaign '${req.params.campaign}' already exists!`});
                 else
-                    return res.status(500).json({err:err.message});
+                    return error(err.message, res);
             });
     });
 }
