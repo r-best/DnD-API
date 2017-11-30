@@ -1,10 +1,6 @@
 const routes = require(`../routes.js`);
 const format = routes.format;
 
-exports.commit = function commit(connection){
-    return connection.execute(`commit`);
-};
-
 exports.putPlayer = function putPlayer(connection, campaign, player){
     return connection.execute(`
         INSERT INTO characters

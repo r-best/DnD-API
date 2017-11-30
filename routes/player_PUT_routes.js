@@ -5,6 +5,7 @@ const error = routes.error;
 
 const db_campaigns = require(`../db/campaigns.js`);
 const db_players = require(`../db/players_PUT.js`);
+const db_shared = require(`../db/shared.js`);
 
 function validatePlayer(player, res){
     let pattern = new RegExp(`^[A-Za-z0-9-//s]+`);
@@ -34,7 +35,7 @@ function validatePlayer(player, res){
     }
     return true;
 }
-
+// DONT FORGET need to check that player doesn't already exist
 exports.initRouter = (connection, router) => {
     // PUT a new player
     router.put('/campaigns/:campaign/players/:player', (req, res) => {
@@ -81,7 +82,7 @@ exports.initRouter = (connection, router) => {
                                                 }
                                                 // Else, we're finally done, commit
                                                 if(flag){
-                                                    db_players.commit(connection)
+                                                    db_shared.commit(connection)
                                                     .then(res7 => {console.log(`Player Added!`);res.json(`Player successfully added`)})
                                                     .catch(err => error(`commit player`, err, res));
                                                 }
