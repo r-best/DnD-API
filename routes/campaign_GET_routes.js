@@ -3,30 +3,25 @@ const format = routes.format;
 const validate = routes.validate;
 const error = routes.error;
 
+const db = require(`../db/campaigns.js`);
+
 exports.initRouter = (connection, router) => {
     // GET all campaigns
     router.get('/campaigns', (req, res) => {
-        connection.execute(`
-            SELECT *
-            FROM campaigns
-        `)
-        .then(res2 => res.json(format(res2, true)))
+        db.getCampaigns(connection)
+        .then(res2 => res.json(res2))
         .catch(err => error(err.message, res));
     });
     
     // GET a single campaign by name
     router.get('/campaigns/:campaign', (req, res) => {
         if(validate(req.params, res))
-            connection.execute(`
-                SELECT *
-                FROM campaigns
-                WHERE campaign_name = :campaign
-            `, [req.params.campaign])
+            db.getCampaign(connection, req.params.campaign)
             .then(res2 => {
-                if(res2.rows.length === 0)
+                if(res2.length === 0)
                     res.status(400).json({err:`Campaign '${req.params.campaign}' does not exist`});
                 else
-                    res.json(format(res2, false));
+                    res.json(res2);
             })
             .catch(err => error(err.message, res));
     });

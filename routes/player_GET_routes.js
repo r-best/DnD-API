@@ -3,20 +3,22 @@ const format = routes.format;
 const validate = routes.validate;
 const error = routes.error;
 
+const db_campaigns = require(`../db/campaigns.js`);
+const db_players = require(`../db/players.js`);
+
 exports.initRouter = (connection, router) => {
     // GET all players in a campaign
     router.get('/campaigns/:campaign/players', (req, res) => {
         if(validate(req.params, res))
-            connection.execute(`
-                SELECT *
-                FROM characters
-                WHERE campaign_name = :campaign
-            `, [req.params.campaign])
+            // Test if campaign exists
+            db_campaigns.getCampaign(connection, req.params.campaign)
             .then(res2 => {
-                if(res2.rows.length === 0)
-                    res.status(400).json({err:`Campaign '${req.params.campaign}' either does not exist or has no players!`});
-                else
-                    res.json(format(res2, true));
+                if(res2.length === 0) // If not, fail
+                    res.status(400).json({err:`Campaign '${req.params.campaign}' does not exist!`});
+                else // Else, get the players in it
+                    db_players.getPlayers(connection, req.params.campaign)
+                    .then(res3 => res.json(res3))
+                    .catch(err => error(err.message, res));
             })
             .catch(err => error(err.message, res));
     });
@@ -24,16 +26,20 @@ exports.initRouter = (connection, router) => {
     // GET a single player in a campaign by name
     router.get('/campaigns/:campaign/players/:player', (req, res) => {
         if(validate(req.params, res))
-            connection.execute(`
-                SELECT *
-                FROM characters
-                WHERE character_name = :player AND campaign_name = :campaign
-            `, [req.params.player, req.params.campaign])
+            // Test if campaign exists
+            db_campaigns.getCampaign(connection, req.params.campaign)
             .then(res2 => {
-                if(res2.rows.length === 0)
-                    res.status(400).json({err:`Player '${req.params.player}' does not exist in campaign '${req.params.campaign}'`});
-                else
-                    res.json(format(res2, false));
+                if(res2.length === 0) // If not, fail
+                    res.status(400).json({err:`Campaign '${req.params.campaign}' does not exist!`});
+                else // Else, get the player
+                    db_players.getPlayer(connection, req.params.campaign, req.params.player)
+                    .then(res3 => {
+                        if(res3.length === 0)
+                            res.status(400).json({err:`Player '${req.params.player}' does not exist in campaign '${req.params.campaign}'`});
+                        else
+                            res.json(res3);
+                    })
+                    .catch(err => error(err.message, res));
             })
             .catch(err => error(err.message, res));
     });
@@ -41,16 +47,20 @@ exports.initRouter = (connection, router) => {
     // GET the classes of a character and what levels they are in each
     router.get('/campaigns/:campaign/players/:player/level', (req, res) => {
         if(validate(req.params, res))
-            connection.execute(`
-                SELECT class_name, lv
-                FROM characterlevel
-                WHERE character_name = :player AND campaign_name = :campaign
-            `, [req.params.player, req.params.campaign])
+            // Test if campaign exists
+            db_campaigns.getCampaign(connection, req.params.campaign)
             .then(res2 => {
-                if(res2.rows.length === 0)
-                    res.status(400).json({err:`Player '${req.params.player}' does not exist in campaign '${req.params.campaign}'`});
-                else
-                    res.json(format(res2, true));
+                if(res2.length === 0) // If not, fail
+                    res.status(400).json({err:`Campaign '${req.params.campaign}' does not exist!`});
+                else // Else, proceed
+                    db_players.getPlayerLevels(connection, req.params.campaign, req.params.player)
+                    .then(res3 => {
+                        if(res3.length === 0)
+                            res.status(400).json({err:`Player '${req.params.player}' does not exist in campaign '${req.params.campaign}'`});
+                        else
+                            res.json(res3);
+                    })
+                    .catch(err => error(err.message, res));
             })
             .catch(err => error(err.message, res));
     });
@@ -58,43 +68,73 @@ exports.initRouter = (connection, router) => {
     // GET all the abilities of a character
     router.get('/campaigns/:campaign/players/:player/abilities', (req, res) => {
         if(validate(req.params, res))
-            connection.execute(`
-                SELECT a.ability_name, a.descr
-                FROM characterabilities c JOIN abilities a
-                ON c.ability_name = a.ability_name
-                WHERE c.character_name = :player AND c.campaign_name = :campaign
-            `, [req.params.player, req.params.campaign])
-            .then(res2 => res.json(format(res2, true)))
+            // Test if campaign exists
+            db_campaigns.getCampaign(connection, req.params.campaign)
+            .then(res2 => {
+                if(res2.length === 0) // If not, fail
+                    res.status(400).json({err:`Campaign '${req.params.campaign}' does not exist!`});
+                else // Else, check if player exists
+                    db_players.getPlayer(connection, req.params.campaign, req.params.player)
+                    .then(res3 => {
+                        if(res3.length === 0) // If not, fail
+                            res.status(400).json({err:`Player '${req.params.player}' does not exist in campaign '${req.params.campaign}'`});
+                        else // Else, proceed
+                            db_players.getPlayerAbilities(connection, req.params.campaign, req.params.player)
+                            .then(res4 => res.json(res4))
+                            .catch(err => error(err.message, res));
+                    })
+                    .catch(err => error(err.message, res));
+            })
             .catch(err => error(err.message, res));
     });
     
     // GET all items a player has
     router.get('/campaigns/:campaign/players/:player/items', (req, res) => {
         if(validate(req.params, res))
-            connection.execute(`
-                SELECT item_name, descr, quantity
-                FROM items
-                WHERE campaign_name = :campaign AND character_name = :player
-            `, [req.params.campaign, req.params.player])
-            .then(res2 => res.json(format(res2, true)))
+            // Test if campaign exists
+            db_campaigns.getCampaign(connection, req.params.campaign)
+            .then(res2 => {
+                if(res2.length === 0) // If not, fail
+                    res.status(400).json({err:`Campaign '${req.params.campaign}' does not exist!`});
+                else // Else, check if player exists
+                    db_players.getPlayer(connection, req.params.campaign, req.params.player)
+                    .then(res3 => {
+                        if(res3.length === 0) // If not, fail
+                            res.status(400).json({err:`Player '${req.params.player}' does not exist in campaign '${req.params.campaign}'`});
+                        else // Else, proceed
+                            db_players.getPlayerItems(connection, req.params.campaign, req.params.player)
+                            .then(res4 => res.json(res4))
+                            .catch(err => error(err.message, res));
+                    })
+                    .catch(err => error(err.message, res));
+            })
             .catch(err => error(err.message, res));
     });
 
     // GET a specific item owned by a player
     router.get('/campaigns/:campaign/players/:player/items/:item', (req, res) => {
         if(validate(req.params, res))
-            connection.execute(`
-                SELECT item_name, descr
-                FROM items
-                WHERE campaign_name = :campaign
-                AND character_name = :player
-                AND item_name = :item
-            `, [req.params.campaign, req.params.player, req.params.item])
+            // Test if campaign exists
+            db_campaigns.getCampaign(connection, req.params.campaign)
             .then(res2 => {
-                if(res2.rows.length === 0)
-                    res.status(400).json({err:`There are several possibilities here and I'm on a time limit. Either campaign '${req.params.campaign}' doesn't exist, player '${req.params.player}' does not exist in it, or the player doesn't have item '${req.params.item}'`});
-                else
-                    res.json(format(res2, false));
+                if(res2.length === 0) // If not, fail
+                    res.status(400).json({err:`Campaign '${req.params.campaign}' does not exist!`});
+                else // Else, check if player exists
+                    db_players.getPlayer(connection, req.params.campaign, req.params.player)
+                    .then(res3 => {
+                        if(res3.length === 0) // If not, fail
+                            res.status(400).json({err:`Player '${req.params.player}' does not exist in campaign '${req.params.campaign}'`});
+                        else // Else, proceed
+                            db_players.getPlayerItem(connection, req.params.campaign, req.params.player, req.params.item)
+                            .then(res4 => {
+                                if(res4.length === 0)
+                                    res.status(400).json({err:`Player ${req.params.player} in campaign ${req.params.campaign} does not own an item called ${req.params.item}`});
+                                else
+                                    res.json(res4);
+                            })
+                            .catch(err => error(err.message, res));
+                    })
+                    .catch(err => error(err.message, res));
             })
             .catch(err => error(err.message, res));
     });
@@ -102,30 +142,50 @@ exports.initRouter = (connection, router) => {
     // GET all attacks a player knows
     router.get('/campaigns/:campaign/players/:player/attacks', (req, res) => {
         if(validate(req.params, res))
-            connection.execute(`
-                SELECT attack_name, descr, atk_bonus, damage, dmg_type
-                FROM attacks
-                WHERE campaign_name = :campaign AND character_name = :player
-            `, [req.params.campaign, req.params.player])
-            .then(res2 => res.json(format(res2, true)))
+            // Test if campaign exists
+            db_campaigns.getCampaign(connection, req.params.campaign)
+            .then(res2 => {
+                if(res2.length === 0) // If not, fail
+                    res.status(400).json({err:`Campaign '${req.params.campaign}' does not exist!`});
+                else // Else, check if player exists
+                    db_players.getPlayer(connection, req.params.campaign, req.params.player)
+                    .then(res3 => {
+                        if(res3.length === 0) // If not, fail
+                            res.status(400).json({err:`Player '${req.params.player}' does not exist in campaign '${req.params.campaign}'`});
+                        else // Else, proceed
+                            db_players.getPlayerAttacks(connection, req.params.campaign, req.params.player)
+                            .then(res4 => res.json(res4))
+                            .catch(err => error(err.message, res));
+                    })
+                    .catch(err => error(err.message, res));
+            })
             .catch(err => error(err.message, res));
     });
 
     // GET a specific attack known by a player
     router.get('/campaigns/:campaign/players/:player/attacks/:attack', (req, res) => {
         if(validate(req.params, res))
-            connection.execute(`
-                SELECT attack_name, descr, atk_bonus, damage, dmg_type
-                FROM attacks
-                WHERE campaign_name = :campaign
-                AND character_name = :player
-                AND attack_name = :atack
-            `, [req.params.campaign, req.params.player, req.params.attack])
+            // Test if campaign exists
+            db_campaigns.getCampaign(connection, req.params.campaign)
             .then(res2 => {
-                if(res2.rows.length === 0)
-                    res.status(400).json({err:`There are several possibilities here and I'm on a time limit. Either campaign '${req.params.campaign}' doesn't exist, player '${req.params.player}' does not exist in it, or the player doesn't have attack '${req.params.attack}'`});
-                else
-                    res.json(format(res2, false));
+                if(res2.length === 0) // If not, fail
+                    res.status(400).json({err:`Campaign '${req.params.campaign}' does not exist!`});
+                else // Else, check if player exists
+                    db_players.getPlayer(connection, req.params.campaign, req.params.player)
+                    .then(res3 => {
+                        if(res3.length === 0) // If not, fail
+                            res.status(400).json({err:`Player '${req.params.player}' does not exist in campaign '${req.params.campaign}'`});
+                        else // Else, proceed
+                            db_players.getPlayerAttack(connection, req.params.campaign, req.params.player, req.params.attack)
+                            .then(res4 => {
+                                if(res4.length === 0)
+                                    res.status(400).json({err:`Player ${req.params.player} in campaign ${req.params.campaign} does not know an attack called ${req.params.attack}`});
+                                else
+                                    res.json(res4);
+                            })
+                            .catch(err => error(err.message, res));
+                    })
+                    .catch(err => error(err.message, res));
             })
             .catch(err => error(err.message, res));
     });
@@ -133,16 +193,23 @@ exports.initRouter = (connection, router) => {
     // GET all spells a player knows
     router.get('/campaigns/:campaign/players/:player/spells', (req, res) => {
         if(validate(req.params, res))
-            connection.execute(`
-                SELECT *
-                FROM spells
-                WHERE spell_name in (
-                    SELECT spell_name
-                    FROM characterspells
-                    WHERE campaign_name = :campaign AND character_name = :player
-                )
-            `, [req.params.campaign, req.params.player])
-            .then(res2 => res.json(format(res2, true)))
+            // Test if campaign exists
+            db_campaigns.getCampaign(connection, req.params.campaign)
+            .then(res2 => {
+                if(res2.length === 0) // If not, fail
+                    res.status(400).json({err:`Campaign '${req.params.campaign}' does not exist!`});
+                else // Else, check if player exists
+                    db_players.getPlayer(connection, req.params.campaign, req.params.player)
+                    .then(res3 => {
+                        if(res3.length === 0) // If not, fail
+                            res.status(400).json({err:`Player '${req.params.player}' does not exist in campaign '${req.params.campaign}'`});
+                        else // Else, proceed
+                            db_players.getPlayerSpells(connection, req.params.campaign, req.params.player)
+                            .then(res4 => res.json(res4))
+                            .catch(err => error(err.message, res));
+                    })
+                    .catch(err => error(err.message, res));
+            })
             .catch(err => error(err.message, res));
     });
 };
