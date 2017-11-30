@@ -15,8 +15,8 @@ exports.initRouter = (connection, router) => {
                 else // Else go ahead and put it
                     db.putCampaign(connection, req.params.campaign)
                     .then(res2 => res.json(res2))
-                    .catch(err => error(err.message, res));
+                    .catch(err => error(`PUT campaign`, err.message, res));
             })
-            .catch(err => error(err.message, res));
+            .catch(err => error(`GET campaign`, err.message, res));
     });
 }

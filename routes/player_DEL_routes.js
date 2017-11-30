@@ -42,6 +42,6 @@ exports.initRouter = (connection, router) => {
                     });
                 });
             })
-            .catch(err => error(err.message, res))
+            .catch(err => error(`DELETE player`, err.message, res))
     });
 };

@@ -10,7 +10,7 @@ exports.initRouter = (connection, router) => {
     router.get('/races', (req, res) => {
         db.getRaces(connection)
         .then(res2 => res.json(res2))
-        .catch(err => error(err.message, res));
+        .catch(err => error(`GET races`, err.message, res));
     });
     
     // GET a single race by name
@@ -23,7 +23,7 @@ exports.initRouter = (connection, router) => {
                 else
                     res.json(res2);
             })
-            .catch(err => error(err.message, res));
+            .catch(err => error(`GET race`, err.message, res));
     });
 
     // GET all abilities associated with a race
@@ -31,6 +31,6 @@ exports.initRouter = (connection, router) => {
         if(validate(req.params, res))
             db.getRaceAbilities(connection, req.params.race)
             .then(res2 => res.json(res2))
-            .catch(err => error(err.message, res));
+            .catch(err => error(`GET race abilities`, err.message, res));
     });
 };

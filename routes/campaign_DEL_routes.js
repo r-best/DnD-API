@@ -18,6 +18,6 @@ exports.initRouter = (connection, router) => {
                 else
                     res.json(`I don't know how, but you somehow deleted more than one campaign with that request. Thanks for breaking my api, you get a 200 response because TECHNICALLY you deleted the campaign(s) you wanted to.`);
             })
-            .catch(err => error(err.message, res));
+            .catch(err => error(`DELETE campaign`, err.message, res));
     });
 }

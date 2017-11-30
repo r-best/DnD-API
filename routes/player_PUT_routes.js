@@ -3,10 +3,13 @@ const format = routes.format;
 const validate = routes.validate;
 const error = routes.error;
 
+const db_campaigns = require(`../db/campaigns.js`);
+const db_players = require(`../db/players_PUT.js`);
+
 function validatePlayer(player, res){
     let pattern = new RegExp(`^[A-Za-z0-9-//s]+`);
     if(!(pattern.test(player[`CHARACTER_NAME`]))){
-        res.status(402).json({err:`Player name '${player[`CHARACTER_NAME`]}' is not valid`});
+        res.status(400).json({err:`Player name '${player[`CHARACTER_NAME`]}' is not valid`});
         return false;
     }
     let alignments = [
@@ -15,17 +18,17 @@ function validatePlayer(player, res){
         `Lawful Evil`, `Neutral Evil`, `Chaotic Evil`
     ];
     if(!alignments.includes(player[`ALIGNMENT`])){
-        res.status(402).json({err:`'${player[`CHARACTER_NAME`]}' is not a valid alignment`});
+        res.status(400).json({err:`'${player[`CHARACTER_NAME`]}' is not a valid alignment`});
         return false;
     }
     if(player[`AC`] < 0){
-        res.status(402).json({err:`'${player[`CHARACTER_NAME`]}' is not a valid alignment`});
+        res.status(400).json({err:`'${player[`CHARACTER_NAME`]}' is not a valid alignment`});
         return false;
     }
     let scores = [`STR`, `DEX`, `CON`, `INT`, `WIS`, `CHA`];
     for(let score of scores){
         if(player[score] < 0 || player[score] > 20){
-            res.status(402).json({err:`'${player[score]}' is not a valid ${score} score`});
+            res.status(400).json({err:`'${player[score]}' is not a valid ${score} score`});
             return false;
         }
     }
@@ -35,66 +38,63 @@ function validatePlayer(player, res){
 exports.initRouter = (connection, router) => {
     // PUT a new player
     router.put('/campaigns/:campaign/players/:player', (req, res) => {
-        console.log(req.body)
         if(validate(req.params, res) && validatePlayer(req.body, res))
-            connection.execute(`
-                INSERT INTO characters
-                VALUES (
-                    :CHARACTER_NAME,
-                    :campaign,
-                    :RACE_NAME,
-                    :ALIGNMENT,
-                    :AC,
-                    :MAX_HP,
-                    :SPD,
-                    0,
-                    :STR,
-                    :DEX,
-                    :CON,
-                    :INT,
-                    :WIS,
-                    :CHA
-                )
-            `,
-            [
-                req.body.CHARACTER_NAME,
-                req.params.campaign,
-                req.body.RACE_NAME,
-                req.body.ALIGNMENT,
-                req.body.AC,
-                req.body.MAX_HP,
-                req.body.SPD,
-                req.body.STR,
-                req.body.DEX,
-                req.body.CON,
-                req.body.INT,
-                req.body.WIS,
-                req.body.CHA
-            ])
+            // Test if campaign exists
+            db_campaigns.getCampaign(connection, req.params.campaign)
             .then(res2 => {
-                connection.execute(`
-                    INSERT INTO characterlevel
-                    VALUES (:CHARACTER_NAME, :campaign, :CLASS_NAME, 1)
-                `, [req.body.CHARACTER_NAME, req.params.campaign, req.body.CLASS_NAME]).then(res3 => {
-                    for(ability of req.body.ABILITIES){
-                        connection.execute(`
-                            INSERT INTO characterabilities
-                            VALUES (:CHARACTER_NAME, :campaign, :ABILITY_NAME)
-                        `, [req.body.CHARACTER_NAME, req.params.campaign, ability]).then(res4 => {
-    
-                        }).catch(err => error(err.message, res));
-                    }
-                    for(spell of req.body.SPELLS){
-                        connection.execute(`
-                            INSERT INTO characterspells
-                            VALUES (:CHARACTER_NAME, :campaign, :SPELL_NAME)
-                        `, [req.body.CHARACTER_NAME, req.params.campaign, spell]).then(res4 => {
-    
-                        }).catch(err => error(err.message, res));
-                    }
-                })
-                res.json(res2)
+                if(res2.length === 0) // If not, fail
+                    res.status(400).json({err:`Campaign '${req.params.campaign}' does not exist!`});
+                else // Else, attempt to put player
+                    db_players.putPlayer(connection, req.params.campaign, req.body)
+                    .then(res3 => {
+                        if(res3.rowsAffected === 0) // If player was failed to insert without giving an error, give up.
+                            res.status(500).json({err:`1Player was not inserted and I don't know why, the code shouldn't be able to reach this point`});
+                        else // Else, attempt to put character level
+                            db_players.putPlayerLevel(connection, req.params.campaign, req.body.CHARACTER_NAME, req.body.CLASS_NAME)
+                            .then(res4 => {
+                                if(res4.rowsAffected === 0) // If player level failed to insert without giving an error, die.
+                                    res.status(500).json({err:`2Player was not inserted and I don't know why, the code shouldn't be able to reach this point`});
+                                else // Else attempt to insert abilities
+                                    db_players.putPlayerAbilities(connection, req.params.campaign, req.body.CHARACTER_NAME, req.body.ABILITIES)
+                                    .then(res5 => {
+                                        let flag = true;
+                                        // If any of the ability inserts failed, fail
+                                        for(let i = 0; i < res5.length; i++){
+                                            if(res5[i] !== true){
+                                                flag = false;
+                                                res.status(500).json({err:res5[i]});
+                                                break;
+                                            }
+                                        }
+                                        // Else attempt to insert spells
+                                        if(flag){
+                                            console.log('aaaaaa')
+                                            db_players.putPlayerSpells(connection, req.params.campaign, req.body.CHARACTER_NAME, req.body.SPELLS)
+                                            .then(res6 => {
+                                                // If any of the spell inserts failed, fail
+                                                for(let i = 0; i < res6.length; i++){
+                                                    if(res6[i] !== true){
+                                                        flag = false;
+                                                        res.status(500).json({err:res6[i]});
+                                                        break;
+                                                    }
+                                                }
+                                                // Else, we're finally done, commit
+                                                if(flag){
+                                                    db_players.commit(connection)
+                                                    .then(res7 => {console.log(`Player Added!`);res.json(`Player successfully added`)})
+                                                    .catch(err => error(`commit player`, err, res));
+                                                }
+                                            })
+                                            .catch(err => error(`PUT player spells`, err, res));
+                                        }
+                                    })
+                                    .catch(err => error(`PUT player abilities`, err, res));
+                            })
+                            .catch(err => error(`PUT player level`, err, res));
+                    })
+                    .catch(err => error(`PUT player`, err, res));
             })
-            .catch(err => error(err.message, res));
+            .catch(err => error(`GET campaign`, err, res));
     });
 };

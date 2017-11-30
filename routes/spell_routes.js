@@ -10,7 +10,7 @@ exports.initRouter = (connection, router) => {
     router.get(`/spells`, (req, res) => {
         db.getSpells(connection)
         .then(res2 => res.json(res2))
-        .catch(err => error(err.message, res));
+        .catch(err => error(`GET spells`, err.message, res));
     });
 
     // GET all spell schools
@@ -28,7 +28,7 @@ exports.initRouter = (connection, router) => {
                 else
                     res.json(res2);
             })
-            .catch(err => error(err.message, res));
+            .catch(err => error(`GET school spells`, err.message, res));
     });
 
     // GET all spells of a certain level
@@ -41,7 +41,7 @@ exports.initRouter = (connection, router) => {
                 else
                     res.json(res2);
             })
-            .catch(err => error(err.message, res));
+            .catch(err => error(`GET level spells`, err.message, res));
     });
 
     // GET a single spell by name
@@ -54,7 +54,7 @@ exports.initRouter = (connection, router) => {
                 else
                     res.json(res2);
             })
-            .catch(err => error(err.message, res));
+            .catch(err => error(`GET spell`, err.message, res));
     });
     
     // GET all classes that can learn a spell
@@ -67,6 +67,6 @@ exports.initRouter = (connection, router) => {
                 else
                     res.json(res2);
             })
-            .catch(err => error(err.message, res));
+            .catch(err => error(`GET spell classes`, err.message, res));
     });
 };

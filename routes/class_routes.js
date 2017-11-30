@@ -10,7 +10,7 @@ exports.initRouter = (connection, router) => {
     router.get(`/classes`, (req, res) => {
         db.getClasses(connection)
         .then(res2 => res.json(res2))
-        .catch(err => error(err.message, res));
+        .catch(err => error(`GET classes`, err.message, res));
     });
     
     // GET a single class by name
@@ -23,7 +23,7 @@ exports.initRouter = (connection, router) => {
                 else
                     res.json(res2);
             })
-            .catch(err => error(err.message, res));
+            .catch(err => error(`GET class`, err.message, res));
     });
 
     // GET all spells a class can learn
@@ -31,7 +31,7 @@ exports.initRouter = (connection, router) => {
         if(validate(req.params, res))
             db.getClassSpells(connection, req.params.class)
             .then(res2 => res.json(res2))
-            .catch(err => error(err.message, res));
+            .catch(err => error(`GET class spells`, err.message, res));
     });
 
     // GET all abilities associated with a class
@@ -39,6 +39,6 @@ exports.initRouter = (connection, router) => {
         if(validate(req.params, res))
             db.getClassAbilities(connection, req.params.class)
             .then(res2 => res.json(res2))
-            .catch(err => error(err.message, res));
+            .catch(err => error(`GET class abilities`, err.message, res));
     });
 };

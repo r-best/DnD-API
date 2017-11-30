@@ -10,7 +10,7 @@ exports.initRouter = (connection, router) => {
     router.get('/campaigns', (req, res) => {
         db.getCampaigns(connection)
         .then(res2 => res.json(res2))
-        .catch(err => error(err.message, res));
+        .catch(err => error(`GET campaigns`, err.message, res));
     });
     
     // GET a single campaign by name
@@ -23,6 +23,6 @@ exports.initRouter = (connection, router) => {
                 else
                     res.json(res2);
             })
-            .catch(err => error(err.message, res));
+            .catch(err => error(`GET campaign`, err.message, res));
     });
 };

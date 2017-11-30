@@ -4,7 +4,7 @@ const validate = routes.validate;
 const error = routes.error;
 
 const db_campaigns = require(`../db/campaigns.js`);
-const db_players = require(`../db/players.js`);
+const db_players = require(`../db/players_GET.js`);
 
 exports.initRouter = (connection, router) => {
     // GET all players in a campaign
@@ -18,9 +18,9 @@ exports.initRouter = (connection, router) => {
                 else // Else, get the players in it
                     db_players.getPlayers(connection, req.params.campaign)
                     .then(res3 => res.json(res3))
-                    .catch(err => error(err.message, res));
+                    .catch(err => error(`GET players`, err.message, res));
             })
-            .catch(err => error(err.message, res));
+            .catch(err => error(`GET campaign`, err.message, res));
     });
     
     // GET a single player in a campaign by name
@@ -39,9 +39,9 @@ exports.initRouter = (connection, router) => {
                         else
                             res.json(res3);
                     })
-                    .catch(err => error(err.message, res));
+                    .catch(err => error(`GET player`, err.message, res));
             })
-            .catch(err => error(err.message, res));
+            .catch(err => error(`GET campaign`, err.message, res));
     });
 
     // GET the classes of a character and what levels they are in each
@@ -60,9 +60,9 @@ exports.initRouter = (connection, router) => {
                         else
                             res.json(res3);
                     })
-                    .catch(err => error(err.message, res));
+                    .catch(err => error(`GET player levels`, err.message, res));
             })
-            .catch(err => error(err.message, res));
+            .catch(err => error(`GET campaign`, err.message, res));
     });
     
     // GET all the abilities of a character
@@ -81,11 +81,11 @@ exports.initRouter = (connection, router) => {
                         else // Else, proceed
                             db_players.getPlayerAbilities(connection, req.params.campaign, req.params.player)
                             .then(res4 => res.json(res4))
-                            .catch(err => error(err.message, res));
+                            .catch(err => error(`GET player abilities`, err.message, res));
                     })
-                    .catch(err => error(err.message, res));
+                    .catch(err => error(`GET player`, err.message, res));
             })
-            .catch(err => error(err.message, res));
+            .catch(err => error(`GET campaign`, err.message, res));
     });
     
     // GET all items a player has
@@ -104,11 +104,11 @@ exports.initRouter = (connection, router) => {
                         else // Else, proceed
                             db_players.getPlayerItems(connection, req.params.campaign, req.params.player)
                             .then(res4 => res.json(res4))
-                            .catch(err => error(err.message, res));
+                            .catch(err => error(`GET player items`, err.message, res));
                     })
-                    .catch(err => error(err.message, res));
+                    .catch(err => error(`GET player`, err.message, res));
             })
-            .catch(err => error(err.message, res));
+            .catch(err => error(`GET campaign`, err.message, res));
     });
 
     // GET a specific item owned by a player
@@ -132,11 +132,11 @@ exports.initRouter = (connection, router) => {
                                 else
                                     res.json(res4);
                             })
-                            .catch(err => error(err.message, res));
+                            .catch(err => error(`GET player item`, err.message, res));
                     })
-                    .catch(err => error(err.message, res));
+                    .catch(err => error(`GET player`, err.message, res));
             })
-            .catch(err => error(err.message, res));
+            .catch(err => error(`GET campaign`, err.message, res));
     });
     
     // GET all attacks a player knows
@@ -155,11 +155,11 @@ exports.initRouter = (connection, router) => {
                         else // Else, proceed
                             db_players.getPlayerAttacks(connection, req.params.campaign, req.params.player)
                             .then(res4 => res.json(res4))
-                            .catch(err => error(err.message, res));
+                            .catch(err => error(`GET player attacks`, err.message, res));
                     })
-                    .catch(err => error(err.message, res));
+                    .catch(err => error(`GET player`, err.message, res));
             })
-            .catch(err => error(err.message, res));
+            .catch(err => error(`GET campaign`, err.message, res));
     });
 
     // GET a specific attack known by a player
@@ -183,11 +183,11 @@ exports.initRouter = (connection, router) => {
                                 else
                                     res.json(res4);
                             })
-                            .catch(err => error(err.message, res));
+                            .catch(err => error(`GET player attack`, err.message, res));
                     })
-                    .catch(err => error(err.message, res));
+                    .catch(err => error(`GET player`, err.message, res));
             })
-            .catch(err => error(err.message, res));
+            .catch(err => error(`GET campaign`, err.message, res));
     });
 
     // GET all spells a player knows
@@ -206,10 +206,10 @@ exports.initRouter = (connection, router) => {
                         else // Else, proceed
                             db_players.getPlayerSpells(connection, req.params.campaign, req.params.player)
                             .then(res4 => res.json(res4))
-                            .catch(err => error(err.message, res));
+                            .catch(err => error(`GET player spells`, err.message, res));
                     })
-                    .catch(err => error(err.message, res));
+                    .catch(err => error(`GET player`, err.message, res));
             })
-            .catch(err => error(err.message, res));
+            .catch(err => error(`GET campaign`, err.message, res));
     });
 };
