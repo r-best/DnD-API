@@ -76,8 +76,7 @@ exports.validate = function validate(params, res){
 */
 exports.error = function error(err, res){
     console.error(`Error on /campaigns:\n${err}`);
-    res.status(500).json(`
-        Sorry I can't provide you with a better error message, 
-        I'm too scared you'll glean some secret information from it and use it to break my program`
+    res.status(500).json(
+        `Sorry I can't provide you with a better error message, I'm too scared you'll glean some secret information from it and use it to break my program`
     );
 };
