@@ -14,7 +14,7 @@ exports.deletePlayerAbilities = function deletePlayerAbilities(connection, campa
         DELETE FROM characterabilities
         WHERE campaign_name = :campaign
         AND character_name = :player
-    `, [req.params.campaign, req.params.player], {autoCommit: false});
+    `, [campaign, player], {autoCommit: false});
 };
 
 exports.deletePlayerSpells = function deletePlayerSpells(connection, campaign, player){
@@ -30,7 +30,7 @@ exports.deletePlayerItems = function deletePlayerItems(connection, campaign, pla
         DELETE FROM items
         WHERE campaign_name = :campaign
         AND character_name = :player
-    `, [req.params.campaign, req.params.player], {autoCommit: false});
+    `, [campaign, player], {autoCommit: false});
 };
 
 exports.deletePlayer = function deletePlayer(connection, campaign, player){
@@ -38,5 +38,5 @@ exports.deletePlayer = function deletePlayer(connection, campaign, player){
         DELETE FROM characters
         WHERE campaign_name = :campaign
         AND character_name = :player
-    `, [req.params.campaign, req.params.player], {autoCommit: false});
+    `, [campaign, player], {autoCommit: false});
 };
