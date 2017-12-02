@@ -76,7 +76,7 @@ exports.validate = function validate(params, res){
 */
 exports.error = function error(location, err, res){
     console.error(`Error in ${location}: `, err);
-    res.status(500).json(
+    res.status(500).json({err:
         `Sorry I can't provide you with a better error message, I'm too scared you'll glean some secret information from it and use it to break my program`
-    );
+    });
 };
