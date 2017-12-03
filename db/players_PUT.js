@@ -50,7 +50,7 @@ exports.putPlayer = function putPlayer(connection, campaign, player){
             location: `PUT player`,
             err: err
         })
-    )
+    );
 };
 
 exports.putPlayerLevel = function putPlayerLevel(connection, campaign, player, className){
@@ -71,7 +71,7 @@ exports.putPlayerLevel = function putPlayerLevel(connection, campaign, player, c
             location: `PUT player level`,
             err: err
         })
-    )
+    );
 };
 
 exports.putPlayerAbilities = function putPlayerAbilities(connection, campaign, player, abilities){

@@ -6,7 +6,20 @@ exports.deletePlayerLevels = function deletePlayerLevels(connection, campaign, p
         DELETE FROM characterlevel
         WHERE campaign_name = :campaign
         AND character_name = :player
-    `, [campaign, player]);
+    `, [campaign, player]).then(res => {
+        if(res.rowsAffected === 0)
+            return Promise.reject({
+                location: `DELETE player level`,
+                err: `Failed to delete player levels`
+            });
+        else
+            return Promise.resolve();
+    }, err => 
+        Promise.reject({
+            location: `PUT player level`,
+            err: err
+        })
+    );
 };
 
 exports.deletePlayerAbilities = function deletePlayerAbilities(connection, campaign, player){
@@ -14,7 +27,16 @@ exports.deletePlayerAbilities = function deletePlayerAbilities(connection, campa
         DELETE FROM characterabilities
         WHERE campaign_name = :campaign
         AND character_name = :player
-    `, [campaign, player]);
+    `, [campaign, player]).then(
+        (res) => Promise.resolve({
+            status: 200,
+            data: res
+        }),
+        (err) => Promise.reject({
+            location: `DELETE player abilities`,
+            err: err
+        })
+    );
 };
 
 exports.deletePlayerSpells = function deletePlayerSpells(connection, campaign, player){
@@ -22,7 +44,16 @@ exports.deletePlayerSpells = function deletePlayerSpells(connection, campaign, p
         DELETE FROM characterspells
         WHERE campaign_name = :campaign
         AND character_name = :player
-    `, [campaign, player]);
+    `, [campaign, player]).then(
+        (res) => Promise.resolve({
+            status: 200,
+            data: res
+        }),
+        (err) => Promise.reject({
+            location: `DELETE player spells`,
+            err: err
+        })
+    );
 };
 
 exports.deletePlayerItems = function deletePlayerItems(connection, campaign, player){
@@ -30,7 +61,16 @@ exports.deletePlayerItems = function deletePlayerItems(connection, campaign, pla
         DELETE FROM items
         WHERE campaign_name = :campaign
         AND character_name = :player
-    `, [campaign, player]);
+    `, [campaign, player]).then(
+        (res) => Promise.resolve({
+            status: 200,
+            data: res
+        }),
+        (err) => Promise.reject({
+            location: `DELETE player items`,
+            err: err
+        })
+    );
 };
 
 exports.deletePlayer = function deletePlayer(connection, campaign, player){
@@ -38,5 +78,14 @@ exports.deletePlayer = function deletePlayer(connection, campaign, player){
         DELETE FROM characters
         WHERE campaign_name = :campaign
         AND character_name = :player
-    `, [campaign, player]);
+    `, [campaign, player]).then(
+        (res) => Promise.resolve({
+            status: 200,
+            data: res
+        }),
+        (err) => Promise.reject({
+            location: `DELETE player`,
+            err: err
+        })
+    );
 };

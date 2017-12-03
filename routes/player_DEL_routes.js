@@ -10,45 +10,24 @@ const db_shared = require(`../db/shared.js`);
 
 exports.initRouter = (connection, router) => {
     router.delete(`/campaigns/:campaign/players/:player`, (req, res) => {
-        if(validate(req.params, res))
-            // Test if campaign exists
-            db_campaigns.getCampaign(connection, req.params.campaign)
-            .then(res2 => {
-                if(res2.length === 0) // If not, fail
-                    res.status(400).json({err:`Campaign '${req.params.campaign}' does not exist!`});
-                else // Else, check if player exists
-                    db_players_GET.getPlayer(connection, req.params.campaign, req.params.player)
-                    .then(res3 => {
-                        if(res3.length === 0) // If not, fail
-                            res.status(400).json({err:`Player '${req.params.player}' does not exist!`});
-                        else // Else, proceed to delete stuff
-                            db_players_DEL.deletePlayerLevels(connection, req.params.campaign, req.params.player)
-                            .then(() => {
-                                db_players_DEL.deletePlayerAbilities(connection, req.params.campaign, req.params.player)
-                                .then(() => {
-                                    db_players_DEL.deletePlayerSpells(connection, req.params.campaign, req.params.player)
-                                    .then(() => {
-                                        db_players_DEL.deletePlayerItems(connection, req.params.campaign, req.params.player)
-                                        .then(() => {
-                                            db_players_DEL.deletePlayer(connection, req.params.campaign, req.params.player)
-                                            .then(() => {
-                                                db_shared.commit(connection)
-                                                .then(() => res.json(`Player ${req.params.player} successfully deleted from campaign ${req.params.campaign}`))
-                                                .catch(err => error(`commit`, err.message, res));
-                                            })
-                                            .catch(err => error(`DELETE player`, err.message, res));
-                                        })
-                                        .catch(err => error(`DELETE player items`, err.message, res));
-                                    })
-                                    .catch(err => error(`DELETE player spells`, err.message, res));
-                                })
-                                .catch(err => error(`DELETE player abilities`, err.message, res));
-                            })
-                            .catch(err => error(`DELETE player levels`, err.message, res));
-                    })
-                    .catch(err => error(`GET player`, err.message, res));
-            })
-            .catch(err => error(`GET campaign`, err.message, res));
-            
+        if(validate(req.params, res)){
+            let queries = [
+                () => db_campaigns.getCampaign(connection, req.params.campaign),
+                () => db_players_GET.getPlayer(connection, req.params.campaign, req.params.player),
+                () => db_players_DEL.deletePlayerLevels(connection, req.params.campaign, req.params.player),
+                () => db_players_DEL.deletePlayerAbilities(connection, req.params.campaign, req.params.player),
+                () => db_players_DEL.deletePlayerSpells(connection, req.params.campaign, req.params.player),
+                () => db_players_DEL.deletePlayerItems(connection, req.params.campaign, req.params.player),
+                () => db_players_DEL.deletePlayer(connection, req.params.campaign, req.params.player),
+                () => db_shared.commit(connection)
+            ];
+            queries.reduce(
+                (p, fn) => p.then(
+                    () => fn(),
+                    (err) => {connection.rollback();error(err.location, err.err, res)}
+                ).catch((err) => {connection.rollback();error(err.location, err.err, res)}),
+                Promise.resolve()
+            ).then(res2 => res.json(`Successfully deleted player '${req.params.player}'`));
+        }   
     });
 };
