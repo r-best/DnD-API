@@ -15,11 +15,11 @@ function checkCampaignDoesntExist(connection, campaign){
     .then(
         (res) => {
             if(res.rows.length !== 0)
-                Promise.reject({
+                return Promise.reject({
                     location: `check campaign doesn't exist`,
                     err: `Campaign '${campaign}' already exists!`
                 });
-            else Promise.resolve({
+            else return Promise.resolve({
                 status: 200,
                 data: format(res, false)
             });

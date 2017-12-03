@@ -39,11 +39,12 @@ exports.putPlayer = function putPlayer(connection, campaign, player){
     .then(res => {
         console.log(`1 success`)
         if(res.rowsAffected === 0)  // If player was failed to insert without giving an error, give up.
-            Promise.reject({
+            return Promise.reject({
                 location: `PUT player`,
                 err: `1Player was not inserted and I don't know why, the code shouldn't be able to reach this point`
             });
-        else Promise.resolve();
+        else 
+            return Promise.resolve();
     }, err => 
         Promise.reject({
             location: `PUT player`,
@@ -59,11 +60,12 @@ exports.putPlayerLevel = function putPlayerLevel(connection, campaign, player, c
     `, [player, campaign, className])
     .then(res => {
         if(res.rowsAffected === 0) // If player level failed to insert without giving an error, die.
-            Promise.reject({
+            return Promise.reject({
                 location: `PUT player level`,
                 err:`2Player was not inserted and I don't know why, the code shouldn't be able to reach this point`
             });
-        else Promise.resolve();
+        else
+            return Promise.resolve();
     }, err => 
         Promise.reject({
             location: `PUT player level`,
@@ -92,13 +94,10 @@ exports.putPlayerAbilities = function putPlayerAbilities(connection, campaign, p
     }
     return Promise.all(queries)
     .then(
-        (res) => {
-            console.log(res)
-            Promise.resolve({
-                status: 200,
-                data: res
-            });
-        },
+        (res) => Promise.resolve({
+            status: 200,
+            data: res
+        }),
         (err) => Promise.reject({
             location: `PUT player ability`,
             err: err
@@ -126,13 +125,10 @@ exports.putPlayerSpells = function putPlayerSpells(connection, campaign, player,
     }
     return Promise.all(queries)
     .then(
-        (res) => {
-            console.log(res)
-            Promise.resolve({
-                status: 200,
-                data: res
-            });
-        },
+        (res) => Promise.resolve({
+            status: 200,
+            data: res
+        }),
         (err) => Promise.reject({
             location: `PUT player spell`,
             err: err

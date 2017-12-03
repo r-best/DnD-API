@@ -27,12 +27,12 @@ exports.getCampaign = function getCampaign(connection, campaign){
     .then(
         (res) => {
             if(res.rows.length === 0)
-                Promise.reject({
+                return Promise.reject({
                     location: `GET campaign`,
                     err: `Campaign '${campaign}' does not exist!`
                 });
             else
-                Promise.resolve({
+                return Promise.resolve({
                     status: 200,
                     data: format(res, false)
                 });
@@ -51,17 +51,17 @@ exports.deleteCampaign = function deleteCampaign(connection, campaign){
     .then(
         (res) => {
             if(res2.rowsAffected == 0)
-                Promise.resolve({
+                return Promise.resolve({
                     status: 400,
                     data: `Campaign '${campaign}' does not exist`
                 });
             else if(res2.rowsAffected == 1)
-                Promise.resolve({
+                return Promise.resolve({
                     status: 200,
                     data: `Campaign '${campaign}' successfully deleted`
                 });
             else
-                Promise.resolve({
+                return Promise.resolve({
                     status: 200,
                     data: `I don't know how, but you somehow deleted more than one campaign with that request. Thanks for breaking my api, you get a 200 response because TECHNICALLY you deleted the campaign(s) you wanted to.`
                 });
@@ -81,12 +81,12 @@ exports.putCampaign = function putCampaign(connection, campaign){
     .then(
         (res) => {
             if(res.rowsAffected === 0)  // If player was failed to insert without giving an error, give up.
-                Promise.reject({
+                return Promise.reject({
                     location: `PUT campaign`,
                     err: `Campaign was not inserted and I don't know why, the code shouldn't be able to reach this point`
                 });
             else
-                Promise.resolve({
+                return Promise.resolve({
                     status: 200,
                     data: `Successfully added campaign ${campaign}`
                 });

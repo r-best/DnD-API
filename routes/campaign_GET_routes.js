@@ -11,7 +11,7 @@ exports.initRouter = (connection, router) => {
         db.getCampaigns(connection)
         .then(
             (res2) => res.status(res2.status).json(res2.data),
-            (err) => error(err.location, err.message, res)
+            (err) => error(err.location, err.err, res)
         );
     });
     
@@ -21,7 +21,7 @@ exports.initRouter = (connection, router) => {
             db.getCampaign(connection, req.params.campaign)
             .then(
                 (res2) => res.status(res2.status).json(res2.data),
-                (err) => error(err.location, err.message, res)
+                (err) => error(err.location, err.err, res)
             );
     });
 };
