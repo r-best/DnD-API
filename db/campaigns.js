@@ -6,42 +6,94 @@ exports.getCampaigns = function getCampaigns(connection){
         SELECT *
         FROM campaigns
     `)
-    .then(res => format(res, true));
+    .then(
+        (res) => Promise.resolve({
+            status: 200,
+            data: format(res)
+        }),
+        (err) => Promise.reject({
+            location: `GET campaigns`,
+            err: err
+        })
+    );
 };
 
 exports.getCampaign = function getCampaign(connection, campaign){
-    return new Promise((resolve, reject) => {
-        return connection.execute(`
-            SELECT *
-            FROM campaigns
-            WHERE campaign_name = :campaign
-        `, [campaign])
-        .then(
-            (res) => {
-                if(res.length === 0)
-                    reject({
-                        location: `GET campaign`,
-                        err: `Campaign '${req.params.campaign}' does not exist!`
-                    });
-                else resolve(format(res, false));
-            }, (err) => reject({
-                location: `GET campaign`,
-                err: err
-            })
-        );
-    });
+    return connection.execute(`
+        SELECT *
+        FROM campaigns
+        WHERE campaign_name = :campaign
+    `, [campaign])
+    .then(
+        (res) => {
+            if(res.rows.length === 0)
+                Promise.reject({
+                    location: `GET campaign`,
+                    err: `Campaign '${campaign}' does not exist!`
+                });
+            else
+                Promise.resolve({
+                    status: 200,
+                    data: format(res, false)
+                });
+        }, (err) => Promise.reject({
+            location: `GET campaign`,
+            err: err
+        })
+    );
 };
 
 exports.deleteCampaign = function deleteCampaign(connection, campaign){
     return connection.execute(`
         DELETE FROM campaigns
         WHERE campaign_name = :campaign
-    `, [campaign]);
+    `, [campaign])
+    .then(
+        (res) => {
+            if(res2.rowsAffected == 0)
+                Promise.resolve({
+                    status: 400,
+                    data: `Campaign '${campaign}' does not exist`
+                });
+            else if(res2.rowsAffected == 1)
+                Promise.resolve({
+                    status: 200,
+                    data: `Campaign '${campaign}' successfully deleted`
+                });
+            else
+                Promise.resolve({
+                    status: 200,
+                    data: `I don't know how, but you somehow deleted more than one campaign with that request. Thanks for breaking my api, you get a 200 response because TECHNICALLY you deleted the campaign(s) you wanted to.`
+                });
+        },
+        (err) => Promise.reject({
+            location: `DELETE campaign`,
+            err: err
+        })
+    );
 };
 
 exports.putCampaign = function putCampaign(connection, campaign){
     return connection.execute(`
         INSERT INTO campaigns
         VALUES (:campaign)
-    `, [campaign]);
+    `, [campaign])
+    .then(
+        (res) => {
+            if(res.rowsAffected === 0)  // If player was failed to insert without giving an error, give up.
+                Promise.reject({
+                    location: `PUT campaign`,
+                    err: `Campaign was not inserted and I don't know why, the code shouldn't be able to reach this point`
+                });
+            else
+                Promise.resolve({
+                    status: 200,
+                    data: `Successfully added campaign ${campaign}`
+                });
+        },
+        (err) => Promise.reject({
+            location: `PUT campaign`,
+            err: err
+        })
+    );
 };

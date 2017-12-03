@@ -41,7 +41,7 @@ exports.initRouter = connection => {
     thing in the array (which there should be if we're not expecting
     a list)
 */
-exports.format = function format(data, expectList){
+exports.format = function format(data, expectList=true){
     let formattedData = [];
     for(let i = 0; i < data.rows.length; i++){
         formattedData[i] = {};
