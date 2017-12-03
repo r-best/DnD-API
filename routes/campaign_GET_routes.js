@@ -17,12 +17,7 @@ exports.initRouter = (connection, router) => {
     router.get('/campaigns/:campaign', (req, res) => {
         if(validate(req.params, res))
             db.getCampaign(connection, req.params.campaign)
-            .then(res2 => {
-                if(res2.length === 0)
-                    res.status(400).json({err:`Campaign '${req.params.campaign}' does not exist`});
-                else
-                    res.json(res2);
-            })
+            .then(res2 => res.json(res2))
             .catch(err => error(`GET campaign`, err.message, res));
     });
 };

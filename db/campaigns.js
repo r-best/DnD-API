@@ -10,12 +10,26 @@ exports.getCampaigns = function getCampaigns(connection){
 };
 
 exports.getCampaign = function getCampaign(connection, campaign){
-    return connection.execute(`
-        SELECT *
-        FROM campaigns
-        WHERE campaign_name = :campaign
-    `, [campaign])
-    .then(res => format(res, false));
+    return new Promise((resolve, reject) => {
+        return connection.execute(`
+            SELECT *
+            FROM campaigns
+            WHERE campaign_name = :campaign
+        `, [campaign])
+        .then(
+            (res) => {
+                if(res.length === 0)
+                    reject({
+                        location: `GET campaign`,
+                        err: `Campaign '${req.params.campaign}' does not exist!`
+                    });
+                else resolve(format(res, false));
+            }, (err) => reject({
+                location: `GET campaign`,
+                err: err
+            })
+        );
+    });
 };
 
 exports.deleteCampaign = function deleteCampaign(connection, campaign){
