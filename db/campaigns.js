@@ -66,10 +66,18 @@ exports.deleteCampaign = function deleteCampaign(connection, campaign){
                     data: `I don't know how, but you somehow deleted more than one campaign with that request. Thanks for breaking my api, you get a 200 response because TECHNICALLY you deleted the campaign(s) you wanted to.`
                 });
         },
-        (err) => Promise.reject({
-            location: `DELETE campaign`,
-            err: err
-        })
+        (err) => {
+            if(err.toString().includes(`ORA-02292`))
+                return Promise.reject({
+                    location: `DELETE campaign`,
+                    err: `Please delete all players in this campaign first`
+                });
+            else
+                return Promise.reject({
+                    location: `DELETE campaign`,
+                    err: err
+                });
+        }
     );
 };
 
