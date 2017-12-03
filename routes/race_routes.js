@@ -11,7 +11,7 @@ exports.initRouter = (connection, router) => {
         db.getRaces(connection)
         .then(
             (res2) => res.status(res2.status).json(res2.data),
-            (err) => error(err.location, err.err, res)
+            (err) => error(err, res)
         );
     });
     
@@ -21,7 +21,7 @@ exports.initRouter = (connection, router) => {
             db.getRace(connection, req.params.race)
             .then(
                 (res2) => res.status(res2.status).json(res2.data),
-                (err) => error(err.location, err.err, res)
+                (err) => error(err, res)
             );
     });
 
@@ -31,7 +31,7 @@ exports.initRouter = (connection, router) => {
             db.getRaceAbilities(connection, req.params.race)
             .then(
                 (res2) => res.status(res2.status).json(res2.data),
-                (err) => error(err.location, err.err, res)
+                (err) => error(err, res)
             );
     });
 };

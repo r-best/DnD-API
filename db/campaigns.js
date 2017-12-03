@@ -50,12 +50,12 @@ exports.deleteCampaign = function deleteCampaign(connection, campaign){
     `, [campaign])
     .then(
         (res) => {
-            if(res2.rowsAffected == 0)
+            if(res.rowsAffected == 0)
                 return Promise.resolve({
                     status: 400,
                     data: `Campaign '${campaign}' does not exist`
                 });
-            else if(res2.rowsAffected == 1)
+            else if(res.rowsAffected == 1)
                 return Promise.resolve({
                     status: 200,
                     data: `Campaign '${campaign}' successfully deleted`
@@ -69,6 +69,7 @@ exports.deleteCampaign = function deleteCampaign(connection, campaign){
         (err) => {
             if(err.toString().includes(`ORA-02292`))
                 return Promise.reject({
+                    status: 400,
                     location: `DELETE campaign`,
                     err: `Please delete all players in this campaign first`
                 });

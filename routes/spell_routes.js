@@ -10,7 +10,7 @@ exports.initRouter = (connection, router) => {
     router.get(`/spells`, (req, res) => {
         db.getSpells(connection)
         .then(res2 => res.status(res2.status).json(res2.data))
-        .catch(err => error(err.location, err.err, res));
+        .catch(err => error(err, res));
     });
 
     // GET all spell schools
@@ -23,7 +23,7 @@ exports.initRouter = (connection, router) => {
         if(validate(req.params, res) && db.getSchools().includes(req.params.school))
             db.getSchoolSpells(connection, req.params.school)
             .then(res2 => res.status(res2.status).json(res2.data))
-            .catch(err => error(err.location, err.err, res));
+            .catch(err => error(err, res));
     });
 
     // GET all spells of a certain level
@@ -31,7 +31,7 @@ exports.initRouter = (connection, router) => {
         if(validate(req.params, res))
             db.getSpellsInLevel(connection, req.params.lv)
             .then(res2 => res.status(res2.status).json(res2.data))
-            .catch(err => error(err.location, err.err, res));
+            .catch(err => error(err, res));
     });
 
     // GET a single spell by name
@@ -39,7 +39,7 @@ exports.initRouter = (connection, router) => {
         if(validate(req.params, res))
             db.getSpell(connection, req.params.spell)
             .then(res2 => res.status(res2.status).json(res2.data))
-            .catch(err => error(err.location, err.err, res));
+            .catch(err => error(err, res));
     });
     
     // GET all classes that can learn a spell
@@ -52,8 +52,8 @@ exports.initRouter = (connection, router) => {
             queries.reduce(
                 (p, fn) => p.then(
                     () => fn(),
-                    (err) => {connection.rollback();error(err.location, err.err, res)}
-                ).catch((err) => {connection.rollback();error(err.location, err.err, res)}),
+                    (err) => {connection.rollback();error(err, res)}
+                ).catch((err) => {connection.rollback();error(err, res)}),
                 Promise.resolve()
             ).then(res2 => res.status(res2.status).json(res2.data));
         }

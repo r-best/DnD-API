@@ -74,9 +74,15 @@ exports.validate = function validate(params, res){
     Last resort error catcher to stop Oracle error messages from
     getting sent to the client (logs them to this program's console instead)
 */
-exports.error = function error(location, err, res){
-    console.error(`Error in ${location}: `, err);
-    res.status(500).json({err:
-        `Sorry I can't provide you with a better error message, I'm too scared you'll glean some secret information from it and use it to break my program`
-    });
+exports.error = function error(err, res){
+    console.log(`ERROR OBJECT: `, err)
+    console.error(`Error in ${err.location}: `, err.err);
+    if(!err.status)
+        err.status = 500;
+    if(err.toString().includes(`ORA`))
+        res.status(err.status).json(
+            `Something went wrong, see the API console if you want details, I'm not sending it to frontend`
+        );
+    else
+        res.status(err.status).json(err.err);
 };

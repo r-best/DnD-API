@@ -19,10 +19,10 @@ exports.initRouter = (connection, router) => {
             queries.reduce(
                 (p, fn) => p.then(
                     () => fn(),
-                    (err) => {connection.rollback();error(err.location, err.err, res)}
-                ).catch((err) => {connection.rollback();error(err.location, err.err, res)}),
+                    (err) => {connection.rollback();error(err, res)}
+                ).catch((err) => {connection.rollback();error(err, res)}),
                 Promise.resolve()
-            ).then(res2 => res.json(`Successfully added campaign!`));
+            ).then(res2 => res.json(`Successfully deleted campaign!`));
         }
     });
 }
