@@ -496,6 +496,14 @@
   ```
   ```
 
+## `/api/classes/:class/abilities/:lv`
+### GET
+* **Description:** Get all abilities a class earns at a certain level
+  
+  **Response body**:  
+  ```
+  ```
+
 ## `/api/races/`
 ### GET
 * **Description:** Get all races

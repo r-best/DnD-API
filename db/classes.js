@@ -79,3 +79,22 @@ exports.getClassAbilities = function getClassAbilities(connection , className){
         })
     );
 };
+
+exports.getClassAbilitiesAtLevel = function getClassAbilitiesAtLevel(connection , className, lv){
+    return connection.execute(`
+        SELECT *
+        FROM classabilities
+        WHERE class_name = :class
+        AND lv = :lv
+    `, [className, lv])
+    .then(
+        (res) => Promise.resolve({
+            status: 200,
+            data: format(res)
+        }),
+        (err) => Promise.reject({
+            location: `GET class abilities per level`,
+            err: err
+        })
+    );
+};

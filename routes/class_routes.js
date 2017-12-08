@@ -36,4 +36,12 @@ exports.initRouter = (connection, router) => {
             .then(res2 => res.status(res2.status).json(res2.data))
             .catch(err => error(err, res));
     });
+    
+    // GET all abilities a class earns at a certain level
+    router.get(`/classes/:class/abilities/:lv`, (req, res) => {
+        if(validate(req.params, res))
+            db.getClassAbilitiesAtLevel(connection, req.params.class, req.params.lv)
+            .then(res2 => res.status(res2.status).json(res2.data))
+            .catch(err => error(err, res));
+    });
 };

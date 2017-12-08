@@ -88,7 +88,7 @@ exports.putPlayerAbilities = function putPlayerAbilities(connection, campaign, p
                         reject(false);
                     else resolve(abilities[i]);
                 }, 
-                err => reject(false)
+                err => reject(err)
             )
         );
     }
@@ -119,7 +119,7 @@ exports.putPlayerSpells = function putPlayerSpells(connection, campaign, player,
                         reject(false);
                     else resolve(spells[i]);
                 },
-                err => reject(false)
+                err => reject(err)
             )
         );
     }
