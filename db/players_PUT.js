@@ -74,6 +74,22 @@ exports.putPlayerLevel = function putPlayerLevel(connection, campaign, player, c
     );
 };
 
+exports.putPlayerItem = function putPlayerItem(connection, campaign, player, item){
+    return connection.execute(`
+        INSERT INTO items
+        VALUES (:CHARACTER_NAME, :campaign, :ITEM_NAME, :descr, :quantity)
+    `, [player, campaign, items[`ITEM_NAME`], item[`DESCR`], item[`QUANTITY`]])
+    .then(
+        res => {
+            if(res.rowsAffected === 0)
+                return Promise.reject(false);
+            else 
+                return Promise.resolve(items[i]);
+        }, 
+        err => Promise.reject(err)
+    );
+};
+
 exports.putPlayerAbilities = function putPlayerAbilities(connection, campaign, player, abilities){
     let queries = [];
     for(let i = 0; i < abilities.length; i++){

@@ -56,6 +56,25 @@ exports.deletePlayerSpells = function deletePlayerSpells(connection, campaign, p
     );
 };
 
+exports.deletePlayerItem = function deletePlayerItem(connection, campaign, player, itemName){
+    return connection.execute(`
+        DELETE FROM items
+        WHERE campaign_name = :campaign
+        AND character_name = :player
+        AND item_name = :item
+    `, [campaign, player, itemName])
+    .then(
+        (res) => Promise.resolve({
+            status: 200,
+            data: res
+        }),
+        (err) => Promise.reject({
+            location: `DELETE player item`,
+            err: err
+        }) 
+    );
+};
+
 exports.deletePlayerItems = function deletePlayerItems(connection, campaign, player){
     return connection.execute(`
         DELETE FROM items

@@ -59,6 +59,22 @@ function checkPlayerDoesntExist(connection, campaign, player){
 }
 
 exports.initRouter = (connection, router) => {
+    //PUT new items
+    router.put(`/campaigns/:campaign/players/:player/items/:item`, (req, res) => {
+        if(validate(req.params, res))
+            db_players_PUT.putPlayerItem(connection, req.params.campaign, req.params.player, req.body)
+            .then(
+                (res) => {
+                    db_shared.commit(connection)
+                    .then(
+                        (res2) => res.json(`Successfully added item ${req.params.item}`),
+                        (err) => error(err, res)
+                    ).catch(err => error(err, res));
+                },
+                (err) => error(err, res)
+            ).catch(err => error(err, res));
+    });
+
     // PUT a new player
     router.put('/campaigns/:campaign/players/:player', (req, res) => {
         if(validate(req.params, res) && validatePlayer(req.body, res)){

@@ -9,6 +9,23 @@ const db_players_DEL = require(`../db/players_DEL.js`);
 const db_shared = require(`../db/shared.js`);
 
 exports.initRouter = (connection, router) => {
+    // DELETE an item
+    router.delete(`/campaigns/:campaign/players/:player/items/:item`, (req, res) => {
+        if(validate(req.params, res))
+            db_players_DEL.deletePlayerItem(connection, req.params.campaign, req.params.player, req.params.item)
+            .then(
+                (res) => {
+                    db_shared.commit(connection)
+                    .then(
+                        (res2) => res.json(`Successfully deleted item ${req.params.item}`),
+                        (err) => error(err, res)
+                    ).catch(err => error(err, res));
+                },
+                (err) => error(err, res)
+            ).catch(err => error(err, res));
+    });
+
+    // DELETE a player
     router.delete(`/campaigns/:campaign/players/:player`, (req, res) => {
         if(validate(req.params, res)){
             let queries = [
