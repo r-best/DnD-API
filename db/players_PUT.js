@@ -78,7 +78,7 @@ exports.putPlayerItem = function putPlayerItem(connection, campaign, player, ite
     return connection.execute(`
         INSERT INTO items
         VALUES (:CHARACTER_NAME, :campaign, :ITEM_NAME, :descr, :quantity)
-    `, [player, campaign, items[`ITEM_NAME`], item[`DESCR`], item[`QUANTITY`]])
+    `, [player, campaign, item[`ITEM_NAME`], item[`DESCR`], item[`QUANTITY`]])
     .then(
         res => {
             if(res.rowsAffected === 0)

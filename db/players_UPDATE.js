@@ -1,4 +1,5 @@
-exports.updatePlayer = function updatePlayer(connection, campaign, player){
+exports.updatePlayer = function updatePlayer(connection, campaign, playerName, playerObj){
+    console.log(`playercha`, playerObj[`CHA`])
     return connection.execute(`
         UPDATE characters
         SET alignment = :alignment,
@@ -15,22 +16,24 @@ exports.updatePlayer = function updatePlayer(connection, campaign, player){
         WHERE campaign_name = :campaign
         AND character_name = :player
     `, [
-        player[`ALIGNMENT`],
-        player[`AC`],
-        player[`MAX_HP`],
-        player[`SPD`],
-        player[`INSP`],
-        player[`STR`],
-        player[`DEX`],
-        player[`CON`],
-        player[`INT`],
-        player[`WIS`],
-        player[`CHA`],
+        playerObj[`ALIGNMENT`],
+        playerObj[`AC`],
+        playerObj[`MAX_HP`],
+        playerObj[`SPD`],
+        playerObj[`INSP`],
+        playerObj[`STR`],
+        playerObj[`DEX`],
+        playerObj[`CON`],
+        playerObj[`INT`],
+        playerObj[`WIS`],
+        playerObj[`CHA`],
         campaign,
-        player[`CHARACTER_NAME`]
+        playerName
     ])
     .then(
-        (res2) => Promise.resolve(),
+        (res) => {
+            console.log(res);
+            Promise.resolve()},
         (err) => Promise.reject({
             location: `UPDATE player`,
             err: err

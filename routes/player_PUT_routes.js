@@ -87,11 +87,10 @@ exports.initRouter = (connection, router) => {
                             db_players_GET.getPlayerAbilities(connection, req.params.campaign, req.params.player)
                             .then(
                                 (res4) => {
+                                    console.log(req.body.CHA)
                                     res4 = res4.data;
-                                    console.log(res4)
                                     for(let i = 0; i < res4.length; i++)
                                         res4[i] = res4[i][`ABILITY_NAME`];
-                                    console.log(res4)
                                     // Go through new ability list and remove any that existed in the old one
                                     for(let i = 0; i < req.body.ABILITIES.length; i++){
                                         if(res4.includes(req.body.ABILITIES[i])){
@@ -99,14 +98,13 @@ exports.initRouter = (connection, router) => {
                                             i--;
                                         }
                                     }
+                                    console.log(req.body.ABILITIES)
                                     db_players_GET.getPlayerSpells(connection, req.params.campaign, req.params.player)
                                     .then(
                                         (res5) => {
                                             res5 = res5.data;
-                                            console.log(res5)
                                             for(let i = 0; i < res5.length; i++)
                                                 res5[i] = res5[i][`SPELL_NAME`];
-                                            console.log(res5)
                                             // Go through new spell list and remove any that existed in the old one
                                             for(let i = 0; i < req.body.SPELLS.length; i++){
                                                 if(res5.includes(req.body.SPELLS[i])){
@@ -115,7 +113,7 @@ exports.initRouter = (connection, router) => {
                                                 }
                                             }
                                             let queries = [
-                                                () => db_players_UPDATE.updatePlayer(connection, req.params.campaign, req.body),
+                                                () => db_players_UPDATE.updatePlayer(connection, req.params.campaign, req.params.player, req.body),
                                                 () => db_players_UPDATE.updatePlayerLevel(connection, req.params.campaign, req.params.player, req.body.CLASS),
                                                 () => db_players_PUT.putPlayerAbilities(connection, req.params.campaign, req.params.player, req.body.ABILITIES),
                                                 () => db_players_PUT.putPlayerSpells(connection, req.params.campaign, req.params.player, req.body.SPELLS),
