@@ -84,7 +84,7 @@ exports.putPlayerItem = function putPlayerItem(connection, campaign, player, ite
             if(res.rowsAffected === 0)
                 return Promise.reject(false);
             else 
-                return Promise.resolve(items[i]);
+                return Promise.resolve(item[i]);
         }, 
         err => Promise.reject(err)
     );
